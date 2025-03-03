@@ -1,4 +1,4 @@
-package org.calendaralarm.domain.user.controller;
+package org.calendaralarm.domain.auth.controller;
 
 
 import lombok.extern.slf4j.Slf4j;

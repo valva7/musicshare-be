@@ -1,8 +1,8 @@
-package org.calendaralarm.global.service;
+package org.calendaralarm.domain.auth.service;
 
 import org.calendaralarm.domain.user.model.entity.CalendarUserEntity;
 import org.calendaralarm.domain.user.repository.CalendarUserRepository;
-import org.calendaralarm.global.model.CustomUserDetails;
+import org.calendaralarm.domain.auth.model.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +26,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(
             user.getId(),
             user.getNickname()
+        );
+    }
+
+    public UserDetails loadUserByUsername(CalendarUserEntity entity) throws UsernameNotFoundException {
+        return new CustomUserDetails(
+            entity.getId(),
+            entity.getNickname()
         );
     }
 }

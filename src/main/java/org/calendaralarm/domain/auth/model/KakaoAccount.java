@@ -1,4 +1,4 @@
-package org.calendaralarm.domain.user.model;
+package org.calendaralarm.domain.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
