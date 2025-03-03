@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: calendar-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/calendar?useUnicode=true&serverTimezone=Asia/Seoul
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: qwe1212
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+  thymeleaf:
+    cache: false
+
+
+kakao:
+  client_id: b5b4e67b3c1c519d3dd172cdc4cd5cc8
+  redirect_uri: http://localhost:8080/kakao/callback
