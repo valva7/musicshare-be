@@ -1,6 +1,6 @@
 package org.calendaralarm.global.pricipal;
 
-import org.calendaralarm.global.domain.CustomUserDetails;
+import org.calendaralarm.global.model.CustomUserDetails;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

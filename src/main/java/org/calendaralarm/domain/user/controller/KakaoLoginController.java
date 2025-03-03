@@ -20,7 +20,7 @@ public class KakaoLoginController {
     @GetMapping("/kakao/callback")
     public String callback(@RequestParam("code")String code, Model model){
         loginService.login(code);
-        return "main/main";
+        return "redirect:/main";
     }
 
 }

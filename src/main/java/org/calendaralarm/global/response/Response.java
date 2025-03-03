@@ -1,4 +1,4 @@
-package org.calendaralarm.global.dto;
+package org.calendaralarm.global.response;
 
 
 import org.calendaralarm.global.exception.ErrorCode;

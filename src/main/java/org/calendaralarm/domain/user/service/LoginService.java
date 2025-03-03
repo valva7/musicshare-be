@@ -2,8 +2,8 @@ package org.calendaralarm.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.calendaralarm.domain.user.model.domain.CalendarUser;
-import org.calendaralarm.domain.user.model.dto.res.KakaoUserInfoRespDto;
+import org.calendaralarm.domain.user.model.CalendarUser;
+import org.calendaralarm.domain.user.dto.res.KakaoUserInfoRespDto;
 import org.calendaralarm.domain.user.model.entity.CalendarUserEntity;
 import org.calendaralarm.domain.user.repository.CalendarUserRepository;
 import org.springframework.stereotype.Service;

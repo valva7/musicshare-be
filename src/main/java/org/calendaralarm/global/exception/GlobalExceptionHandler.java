@@ -1,7 +1,7 @@
 package org.calendaralarm.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.calendaralarm.global.dto.Response;
+import org.calendaralarm.global.response.Response;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

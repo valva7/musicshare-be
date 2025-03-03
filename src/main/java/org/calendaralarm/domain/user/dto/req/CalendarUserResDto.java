@@ -1,4 +1,4 @@
-package org.calendaralarm.domain.user.model.dto.req;
+package org.calendaralarm.domain.user.dto.req;
 
 import org.calendaralarm.domain.user.model.entity.CalendarUserEntity;
 

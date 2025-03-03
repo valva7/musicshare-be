@@ -1,4 +1,4 @@
-package org.calendaralarm.global.domain;
+package org.calendaralarm.global.model;
 
 import java.util.Collection;
 import java.util.List;

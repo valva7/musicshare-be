@@ -2,7 +2,7 @@ package org.calendaralarm.global.service;
 
 import org.calendaralarm.domain.user.model.entity.CalendarUserEntity;
 import org.calendaralarm.domain.user.repository.CalendarUserRepository;
-import org.calendaralarm.global.domain.CustomUserDetails;
+import org.calendaralarm.global.model.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

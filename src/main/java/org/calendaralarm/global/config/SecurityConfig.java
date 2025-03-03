@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler accessDeniedHandler;
 
     private static final String[] AUTH_ALLOWLIST = {
-        "/swagger-ui/**", "/v3/**", "/login/**", "/images/**", "/kakao/**"
+        "/swagger-ui/**", "/v3/**", "/login/**", "/images/**", "/kakao/**", "/main/**"
     };
 
 

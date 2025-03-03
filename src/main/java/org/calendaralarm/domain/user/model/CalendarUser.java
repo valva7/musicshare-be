@@ -1,4 +1,4 @@
-package org.calendaralarm.domain.user.model.domain;
+package org.calendaralarm.domain.user.model;
 
 
 import lombok.AllArgsConstructor;
