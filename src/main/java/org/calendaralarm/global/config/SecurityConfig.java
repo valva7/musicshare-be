@@ -36,8 +36,8 @@ public class SecurityConfig {
         "/v3/**",
         "/login/**",
         "/images/**",
-        "/kakao/**",
-        "/main/**"
+        "/main/**",
+        "/auth/**"
     };
 
 
