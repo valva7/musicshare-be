@@ -1,7 +1,7 @@
 package org.calendaralarm.domain.auth.utils;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 import javax.crypto.SecretKey;
@@ -42,6 +42,23 @@ public class TokenProvider {
                         .getPayload()
                         .getSubject()
         );
+    }
+
+    // 🔹 JWT 검증 (서명, 만료시간, 발급자 등 체크)
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+            return true;
+        } catch (ExpiredJwtException e) {
+            System.out.println("토큰이 만료되었습니다.");
+        } catch (Exception e) {
+            System.out.println("유효하지 않은 토큰: " + e.getMessage());
+        }
+        return false;
     }
 
 }

@@ -18,4 +18,4 @@ secret-key: calendar-service-java-web-token-secretKey-is-aaaaaaaaaaaaaaaaaaaaaaa
 
 kakao:
   client_id: b5b4e67b3c1c519d3dd172cdc4cd5cc8
-  redirect_uri: http://mycal.ddns.net:3000/kakao/callback
+  redirect_uri: http://localhost:3000/kakao/callback

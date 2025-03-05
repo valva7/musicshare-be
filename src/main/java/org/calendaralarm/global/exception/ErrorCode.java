@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
     INVALID_INPUT_VALUE(400, "invalid input value"),
+    UNAUTHORIZED(401, "unauthorized"),
     NOT_FOUND(404, "not found data"),
     INTERNAL_SERVER_ERROR(500, "unexpected error");
 

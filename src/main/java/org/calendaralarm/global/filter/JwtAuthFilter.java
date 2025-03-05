@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.calendaralarm.domain.auth.utils.TokenProvider;
 import org.calendaralarm.domain.user.model.entity.CalendarUserEntity;
 import org.calendaralarm.domain.user.repository.CalendarUserRepository;
-import org.calendaralarm.domain.auth.service.KakaoService;
 import org.calendaralarm.domain.auth.model.CustomUserDetails;
 import org.calendaralarm.domain.auth.service.CustomUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

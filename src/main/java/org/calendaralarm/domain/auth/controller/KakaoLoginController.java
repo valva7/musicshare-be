@@ -3,6 +3,7 @@ package org.calendaralarm.domain.auth.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.calendaralarm.domain.auth.service.LoginService;
+import org.calendaralarm.global.response.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,9 +18,9 @@ public class KakaoLoginController {
     private final LoginService loginService;
 
     @PostMapping("/kakao-token")
-    public String getKakaoToken(@RequestParam("code")String code){
+    public Response<String> getKakaoToken(@RequestParam("code")String code){
         String token = loginService.login(code);
-        return token;
+        return Response.ok(token);
     }
 
 }
