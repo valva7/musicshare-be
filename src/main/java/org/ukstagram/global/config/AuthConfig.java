@@ -1,6 +1,8 @@
 package org.ukstagram.global.config;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import org.ukstagram.domain.user.repository.MemberRepository;
 import org.ukstagram.global.pricipal.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -8,11 +10,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 // Spring MVC에서 웹 애플리케이션의 설정을 추가하고 커스터마이징할 수 있게 해주는 인터페이스
 @Configuration
+@AllArgsConstructor
 public class AuthConfig implements WebMvcConfigurer {
+
+    private final MemberRepository memberRepository;
 
     @Override
     public void addArgumentResolvers(List argumentResolvers) {
-        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver());
+        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver(memberRepository));
     }
 
     @Override

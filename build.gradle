@@ -51,6 +51,12 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
+    // AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    // JavaZoom JLayer
+    implementation 'javazoom:jlayer:1.0.1'
+
     // query log
     //implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter")
 

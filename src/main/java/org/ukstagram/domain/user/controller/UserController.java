@@ -8,7 +8,7 @@ import org.ukstagram.domain.user.dto.req.CalendarUserResDto;
 import org.ukstagram.domain.user.service.CalendarUserService;
 import org.ukstagram.global.response.Response;
 import org.ukstagram.global.pricipal.AuthPrincipal;
-import org.ukstagram.global.pricipal.UserPrincipal;
+import org.ukstagram.global.pricipal.UserAuth;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +23,7 @@ public class UserController {
     private final CalendarUserService calendarUserService;
 
     @GetMapping
-    public Response<CalendarUserResDto> getUser(@Parameter(hidden = true)@AuthPrincipal UserPrincipal user, Long userId){
+    public Response<CalendarUserResDto> getUser(@Parameter(hidden = true)@AuthPrincipal UserAuth user, Long userId){
         return Response.ok(calendarUserService.getUser(userId));
     }
 

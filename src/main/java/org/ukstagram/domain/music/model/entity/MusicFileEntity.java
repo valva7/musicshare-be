@@ -29,9 +29,12 @@ public class MusicFileEntity extends TimeBaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "music_id", nullable = false)
-    private MusicEntity musicEntity;
+    private MusicEntity music;
 
     @Column(nullable = false)
+    private String fileOriName;
+
+    @Column(nullable = true)
     private String fileType;
 
     @Column(nullable = false)
