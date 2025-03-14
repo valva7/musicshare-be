@@ -6,20 +6,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.ukstagram.domain.user.model.entity.CalendarUserEntity;
+import org.ukstagram.domain.user.model.entity.MemberEntity;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CalendarUser {
+public class Member {
 
     private Long id;
     private String nickname;
 
-    public static CalendarUserEntity toEntity(CalendarUser user){
-        return CalendarUserEntity.builder()
+    public static MemberEntity toEntity(Member user){
+        return MemberEntity.builder()
             .nickname(user.getNickname())
             .build();
     }

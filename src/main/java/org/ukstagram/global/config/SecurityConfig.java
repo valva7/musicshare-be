@@ -3,8 +3,10 @@ package org.ukstagram.global.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.ukstagram.domain.auth.utils.TokenProvider;
-import org.ukstagram.domain.user.repository.CalendarUserRepository;
+import org.ukstagram.domain.user.repository.MemberRepository;
 import org.ukstagram.domain.auth.service.CustomUserDetailsService;
 import org.ukstagram.global.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +26,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;  // CustomUserDetailsService 추가
 
-    private final CalendarUserRepository repository;
+    private final MemberRepository repository;
 
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
@@ -39,25 +41,40 @@ public class SecurityConfig {
         "/auth/**"
     };
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)  throws Exception{
-        http.csrf((csrf) -> csrf.disable());
+        // CSRF 비활성화
+        http.csrf(AbstractHttpConfigurer::disable);
+
+        // CORS 설정
         http.cors(Customizer.withDefaults());
 
-        http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, repository, tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        // AUTH_ALLOWLIST에 포함된 경로는 인증 없이 허용
         http.authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(AUTH_ALLOWLIST).permitAll()
-            .anyRequest().authenticated());
+            .requestMatchers(AUTH_ALLOWLIST).permitAll() // allow list
+            .anyRequest().authenticated()); // 나머지 경로는 인증 필요
 
-        http.exceptionHandling((handling) -> handling
+        // JWT 인증 필터 추가 (requestMatchers로 설정한 경로 외에서 동작하도록)
+        http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, repository, tokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        // 예외 처리
+        http.exceptionHandling(handling -> handling
             .authenticationEntryPoint(authenticationEntryPoint)
             .accessDeniedHandler(accessDeniedHandler));
 
-        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.formLogin((form) -> form.disable());   // Spring Security 기본 로그인 화면 Disable
+        // 세션 관리 (stateless)
+        http.sessionManagement(sessionManagement -> sessionManagement
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        // Spring Security 기본 로그인 화면 비활성화
+        http.formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(AUTH_ALLOWLIST);
     }
 
 }

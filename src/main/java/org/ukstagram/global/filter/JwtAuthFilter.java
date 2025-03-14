@@ -5,11 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.ukstagram.domain.auth.utils.TokenProvider;
-import org.ukstagram.domain.user.model.entity.CalendarUserEntity;
-import org.ukstagram.domain.user.repository.CalendarUserRepository;
+import org.ukstagram.domain.user.model.entity.MemberEntity;
+import org.ukstagram.domain.user.repository.MemberRepository;
 import org.ukstagram.domain.auth.model.CustomUserDetails;
 import org.ukstagram.domain.auth.service.CustomUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService customUserDetailsService;
-    private final CalendarUserRepository repository;
+    private final MemberRepository repository;
     private final TokenProvider tokenProvider;
 
     @Override
@@ -33,12 +34,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String accessToken = authorizationHeader.substring(7);
             // 토큰으로 사용자 인증
             Long userId = tokenProvider.getUserId(accessToken);
-            CalendarUserEntity calendarUserEntity = repository.getCalendarUserEntityById(userId);
+            MemberEntity memberEntity = repository.getCalendarUserEntityById(userId);
 
             // 존재할 경우 유저 정보를 SecurityContextHolder에 저장
-            if(calendarUserEntity != null){
+            if(memberEntity != null){
                 // 커스텀한 유저 Object로 저장
-                CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(calendarUserEntity);
+                CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(memberEntity);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

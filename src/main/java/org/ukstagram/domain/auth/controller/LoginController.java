@@ -30,7 +30,7 @@ public class LoginController {
     public Response<Void> loginPage(HttpServletRequest request) {
         String token = request.getHeader("Authorization"); // 요청 헤더에서 토큰 가져오기
 
-        if (token == null || tokenProvider.validateToken(token)) {
+        if (!tokenProvider.validateToken(token)) {
             return Response.error(ErrorCode.UNAUTHORIZED);
         }
 

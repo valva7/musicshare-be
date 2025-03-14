@@ -53,8 +53,6 @@ public class TokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
             return true;
-        } catch (ExpiredJwtException e) {
-            System.out.println("토큰이 만료되었습니다.");
         } catch (Exception e) {
             System.out.println("유효하지 않은 토큰: " + e.getMessage());
         }
