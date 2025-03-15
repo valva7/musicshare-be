@@ -6,7 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.ukstagram.common.utils.MusicFileProcess;
+import org.ukstagram.common.utils.FFmpegAudioAnalysis;
+import org.ukstagram.domain.ai.service.OpenAiService;
 import org.ukstagram.domain.file.service.S3Uploader;
 import org.ukstagram.domain.music.model.entity.MusicEntity;
 import org.ukstagram.domain.music.model.entity.MusicFileEntity;
@@ -25,6 +26,8 @@ public class MusicService {
     private final MusicRepository musicRepository;
     private final MemberRepository memberRepository;
 
+    private final OpenAiService openAiService;
+
     private final S3Uploader s3Uploader;
 
     @Transactional
@@ -32,16 +35,21 @@ public class MusicService {
         MemberEntity memberEntity = memberRepository.findById(userAuth.getUserId()).orElseThrow();
 
         try {
+            // FFMPEG으로 음악 특징 분석
+            String musicAnalysisData = FFmpegAudioAnalysis.analyzeAudio(file);
+            // AI에게 음악 분위기 분석 요청
+            String musicMood = openAiService.analyzeMusicWithGPT(musicAnalysisData);
+
             // Music Insert
             MusicEntity musicEntity = MusicEntity.builder()
                 .title(title)
                 .genre(genre)
                 .theme(theme)
-                .mood(mood)
+                .mood(musicMood)
                 .tags(tags)
                 .description(description)
                 .author(memberEntity)
-                .duration(MusicFileProcess.getMp3Duration(file))
+                .duration(musicAnalysisData.substring(musicAnalysisData.indexOf("Duration Data :") + "Duration Data :".length(), musicAnalysisData.indexOf("\n")))
                 .build();
             musicRepository.save(musicEntity);
 
