@@ -38,7 +38,8 @@ public class MusicEntity extends TimeBaseEntity {
     private String theme;
     private String mood;
     private String genre;
-    private int duration;
+    private String tags;
+    private String duration;
     private String description;
     private double rating;
     private int downloadCount;

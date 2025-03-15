@@ -26,6 +26,8 @@ public class MusicController {
                                             @RequestParam("file") MultipartFile file,
                                             @RequestParam(name = "title", required = true) String title,
                                             @RequestParam(name = "genre", required = true) String genre,
+                                            @RequestParam(name = "mood", required = true) String mood,
+                                            @RequestParam(name = "theme", required = true) String theme,
                                             @RequestParam(name = "description", required = true) String description,
                                             @RequestParam(name = "tags", required = true) String tags
     ) throws Exception {
@@ -33,7 +35,7 @@ public class MusicController {
             return Response.error(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        musicService.uploadMusicFile(user, file, title, genre, description, tags);
+        musicService.uploadMusicFile(user, file, title, genre, mood, theme, description, tags);
 
         return Response.ok("업로드 성공했습니다.");
     }

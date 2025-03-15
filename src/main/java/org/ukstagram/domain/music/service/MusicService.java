@@ -2,14 +2,11 @@ package org.ukstagram.domain.music.service;
 
 import jakarta.transaction.Transactional;
 import java.io.IOException;
-import java.io.InputStream;
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.Header;
-import javazoom.jl.decoder.JavaLayerException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.ukstagram.common.utils.MusicFileProcess;
 import org.ukstagram.domain.file.service.S3Uploader;
 import org.ukstagram.domain.music.model.entity.MusicEntity;
 import org.ukstagram.domain.music.model.entity.MusicFileEntity;
@@ -31,7 +28,7 @@ public class MusicService {
     private final S3Uploader s3Uploader;
 
     @Transactional
-    public void uploadMusicFile(UserAuth userAuth, MultipartFile file, String title, String description, String genre, String tags) throws Exception {
+    public void uploadMusicFile(UserAuth userAuth, MultipartFile file, String title, String description, String genre, String mood, String theme, String tags) throws Exception {
         MemberEntity memberEntity = memberRepository.findById(userAuth.getUserId()).orElseThrow();
 
         try {
@@ -39,14 +36,16 @@ public class MusicService {
             MusicEntity musicEntity = MusicEntity.builder()
                 .title(title)
                 .genre(genre)
+                .theme(theme)
+                .mood(mood)
+                .tags(tags)
                 .description(description)
-                .theme(tags)
                 .author(memberEntity)
-                .duration(getMp3Duration(file))
-                .mood("")
+                .duration(MusicFileProcess.getMp3Duration(file))
                 .build();
             musicRepository.save(musicEntity);
 
+            // 음악 파일 S3 업로드
             String uploadUrl = s3Uploader.musicFileUpload(file);
 
             // MusicFile Insert
@@ -59,20 +58,6 @@ public class MusicService {
         } catch (IOException e) {
             throw new IOException();
         }
-    }
-
-    public int getMp3Duration(MultipartFile file) throws Exception {
-        InputStream inputStream = file.getInputStream();
-        Bitstream bitstream = new Bitstream(inputStream);
-        Header header = bitstream.readFrame();
-
-        if (header == null) {
-            throw new JavaLayerException("Invalid MP3 file");
-        }
-
-        int totalFrames = header.max_number_of_frames(128000);
-        float msPerFrame = header.ms_per_frame();
-        return (int) ((totalFrames * msPerFrame) / 1000);
     }
 
 }

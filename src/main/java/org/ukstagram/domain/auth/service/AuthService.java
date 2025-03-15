@@ -3,6 +3,7 @@ package org.ukstagram.domain.auth.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ukstagram.domain.auth.dto.res.LoginTokenRes;
 import org.ukstagram.domain.auth.utils.TokenProvider;
 import org.ukstagram.domain.user.model.Member;
 import org.ukstagram.domain.auth.dto.res.KakaoUserInfoRespDto;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LoginService {
+public class AuthService {
 
     private final KakaoService kakaoService;
 
@@ -22,11 +23,11 @@ public class LoginService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public String login(String code) {
-        String accessToken = kakaoService.getAccessTokenFromKakao(code);
+    public LoginTokenRes login(String code) {
+        String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(code);
 
         // 카카오 유저 정보 가져오기
-        KakaoUserInfoRespDto userFromKakao = kakaoService.getUserFromKakao(accessToken);
+        KakaoUserInfoRespDto userFromKakao = kakaoService.getUserFromKakao(kakaoAccessToken);
 
         // 유저의 닉네임으로 DB에서 정보 조회 (원래는 이메일처럼 유니크한 값 사용)
         String nickName = userFromKakao.getKakaoAccount().getProfile().getNickName();
@@ -42,11 +43,17 @@ public class LoginService {
             memberRepository.save(newEntity);
 
             // Jwt 토큰 발급
-            return tokenProvider.createToken(newEntity.getId());
+            String refreshToken = tokenProvider.createRefreshToken(newEntity.getId());
+            String accessToken = tokenProvider.createAccessToken(newEntity.getId());
+
+            return new LoginTokenRes(accessToken, refreshToken);
         }
 
         // Jwt 토큰 발급
-        return tokenProvider.createToken(memberEntity.getId());
+        String refreshToken = tokenProvider.createRefreshToken(memberEntity.getId());
+        String accessToken = tokenProvider.createAccessToken(memberEntity.getId());
+
+        return new LoginTokenRes(accessToken, refreshToken);
     }
 
 }
