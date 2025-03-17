@@ -22,7 +22,7 @@ public class SwaggerConfig {
     private Info apiInfo() {
         return new Info()
             .title("Calendar Alarm Service")
-            .description("캘린더 알림 서비스")
+            .description("음악공유 서비스")
             .version("1..0.0");
     }
 
