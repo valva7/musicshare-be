@@ -60,6 +60,7 @@ public class MusicEntity extends TimeBaseEntity {
         this.author = new MemberEntity(music.getAuthor());
         this.title = music.getInfo().getTitle();
         this.theme = music.getInfo().getTheme();
+        this.mood = music.getInfo().getMood();
         this.genre = music.getInfo().getGenre();
         this.duration = music.getInfo().getDuration();
         this.description = music.getInfo().getDescription();

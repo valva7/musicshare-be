@@ -24,11 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    @Value("${kakao.client_id}")
-    private String clientId;
-    @Value("${kakao.redirect_uri}")
-    private String redirectUri;
-
     private final TokenProvider tokenProvider;
     private final AuthService authService;
 

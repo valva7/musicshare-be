@@ -12,24 +12,27 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class KakaoService {
 
     @Value("${kakao.client_id}")
-    private String clientId;
+    private String CLIENT_ID;
 
-    @Value("${kakao.redirect_uri}")
-    private String redirectUri;
+    @Value("${server-url.front}")
+    private String FRONT_URL;
 
-    private final String KAKAO_AUTH_URL = " https://kauth.kakao.com";
-    private final String KAKAO_USER_URL = "https://kapi.kakao.com";
+    @Value("${kakao.auth-url}")
+    private String KAKAO_AUTH_URL;
 
+    @Value("${kakao.user_url}")
+    private String KAKAO_USER_URL;
 
     public String getAccessTokenFromKakao(String code) {
+        String redirectUrl = FRONT_URL + "/kakao/callback";
         KakaoTokenRespDto kakaoTokenRespDto = WebClient.create(KAKAO_AUTH_URL)
             .get()
             .uri(uriBuilder -> uriBuilder
                 .scheme("https")
                 .path("/oauth/token")
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("client_id", clientId)
-                .queryParam("redirect_uri", redirectUri)
+                .queryParam("client_id", CLIENT_ID)
+                .queryParam("redirect_uri", redirectUrl)
                 .queryParam("code", code)
                 .build())
             .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())

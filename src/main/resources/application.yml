@@ -14,17 +14,25 @@ spring:
       password: qwe1212
   jpa:
     database: mysql
-    hibernate:
-      ddl-auto: create
-  thymeleaf:
-    cache: false
+    show-sql: true
+    properties:
+      hibernate:
+        show_sql: true # SQL 출력
+        format_sql: true # 포매터 적용
+        use_sql_comments: true # JPQL 출력
+        ddl-auto: update
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+logging.level:
+  org.hibernate.type: trace # 쿼리 파라미터 출력
+
 
 server:
   tomcat:
     max-http-form-post-size: 10MB
 
 secret-key: calendar-service-java-web-token-secretKey-is-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-kakao:
-  client_id: b5b4e67b3c1c519d3dd172cdc4cd5cc8
-  redirect_uri: http://localhost:3000/kakao/callback
