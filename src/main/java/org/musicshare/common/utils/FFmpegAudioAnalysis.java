@@ -19,10 +19,6 @@ import java.util.regex.Pattern;
 @Slf4j
 public class FFmpegAudioAnalysis {
 
-    private final static String[] FFPROBE_PROCESS_COMMAND = {
-        "ffprobe", "-i", "-show_entries", "format=duration", "-v", "quiet", "-of", "csv=p=0"
-    };
-
     private final static int ARRAY_LIMIT = 10;
 
     public static String analyzeAudio(MultipartFile file) throws Exception {
@@ -52,7 +48,7 @@ public class FFmpegAudioAnalysis {
         String spectralResult = analyzeFrequency(filePath, musicDurationFormatMinSec);
 
         // 임시 파일 삭제
-        //tempFile.delete();
+        tempFile.delete();
 
         // 결과 반환
         return "Duration Data :" + musicDurationFormatMinSec + "\n" +
@@ -63,61 +59,29 @@ public class FFmpegAudioAnalysis {
 
     public static double getMusicDuration(String filePath) throws Exception {
         // FFprobe 명령 실행
-        ProcessBuilder processBuilder = new ProcessBuilder(
-            FFPROBE_PROCESS_COMMAND[0],
-            FFPROBE_PROCESS_COMMAND[1],
-            filePath,
-            FFPROBE_PROCESS_COMMAND[2],
-            FFPROBE_PROCESS_COMMAND[3],
-            FFPROBE_PROCESS_COMMAND[4],
-            FFPROBE_PROCESS_COMMAND[5],
-            FFPROBE_PROCESS_COMMAND[6],
-            FFPROBE_PROCESS_COMMAND[7]
-        );
+        String command = "ffprobe -i " + filePath + " -show_entries format=duration -v quiet -of csv=p=0";
+        String durationStr = runCommand(command);
 
-        processBuilder.redirectErrorStream(true); // 오류 스트림을 표준 출력과 합침
-        Process process = processBuilder.start();
-
-        // FFprobe 실행 결과 읽기
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String durationStr = reader.readLine();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println("FFprobe Output Line: " + line);
+        if (durationStr.isEmpty()) {
+            throw new Exception("재생 시간 분석 실패");
         }
-
-        // FFprobe 오류 출력 확인
-        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        String errorMessage = null;
-        while ((errorMessage = errorReader.readLine()) != null) {
-            System.out.println("FFprobe Error: " + errorMessage);
-        }
-
-        process.waitFor();  // 프로세스 종료 대기
-
-        if (durationStr == null || durationStr.isEmpty()) {
-            throw new Exception("FFprobe failed to retrieve duration. Please check the error messages above.");
-        }
-
-        // durationStr을 출력해서 확인
-        System.out.println("FFprobe Output: " + durationStr);
 
         // durationStr이 숫자로 변환이 되지 않으면 예외 처리
         try {
             return Double.parseDouble(durationStr);
         } catch (NumberFormatException e) {
-            throw new Exception("Failed to parse duration: " + durationStr);
+            throw new Exception("재생 시간 변환 실패: " + durationStr);
         }
     }
 
     // BPM 분석 (aubio 사용)
-    private static String analyzeBPM(String filePath) {
+    private static String analyzeBPM(String filePath) throws Exception {
         String command = "aubio tempo -i " + filePath;
         return runCommand(command);
     }
 
     // RMS (음량) 분석
-    private static String analyzeRMS(String filePath) {
+    private static String analyzeRMS(String filePath) throws Exception {
         String command = "ffmpeg -i " + filePath + " -af volumedetect -f null -";
         String output = runCommand(command);
 
@@ -127,12 +91,12 @@ public class FFmpegAudioAnalysis {
         if (matcher.find()) {
             return "Mean Volume: " + matcher.group(1) + " dB";
         } else {
-            return "RMS 분석 실패 (데이터 없음)";
+            throw new Exception("RMS 분석 실패");
         }
     }
 
     // 주파수 분석 (PNG 변환)
-    private static String analyzeFrequency(String filePath, String mp3DurationFormatMinSec) {
+    private static String analyzeFrequency(String filePath, String mp3DurationFormatMinSec) throws Exception {
         File audioFile = new File(filePath);
         File pngFile = new File(audioFile.getParent(), "spectrum.png");
 
@@ -147,7 +111,7 @@ public class FFmpegAudioAnalysis {
         runCommand(command);
 
         if (!pngFile.exists()) {
-            return "주파수 분석 실패 (spectrum.png 생성 안됨)";
+            throw new Exception("주파수 분석 실패 (이미지 파일 없음)");
         }
 
         // OpenCV로 spectrum.png 분석
@@ -160,10 +124,10 @@ public class FFmpegAudioAnalysis {
     }
 
     // OpenCV로 spectrum.png 분석
-    private static String extractFrequenciesFromImage(String imagePath) {
+    private static String extractFrequenciesFromImage(String imagePath) throws Exception {
         Mat image = opencv_imgcodecs.imread(imagePath, opencv_imgcodecs.IMREAD_GRAYSCALE);
         if (image.empty()) {
-            return "이미지를 로드할 수 없습니다.";
+            throw new Exception("주파수 이미지 파일을 찾을 수 없음");
         }
 
         int height = image.rows();
@@ -202,7 +166,7 @@ public class FFmpegAudioAnalysis {
     }
 
     // FFmpeg 또는 aubio 명령 실행
-    private static String runCommand(String command) {
+    private static String runCommand(String command) throws Exception {
         StringBuilder output = new StringBuilder();
         try {
             // ProcessBuilder를 사용해 명령어를 실행
@@ -220,10 +184,10 @@ public class FFmpegAudioAnalysis {
             // 프로세스 종료 대기
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                return "명령어 실행 중 오류 발생, 종료 코드: " + exitCode;
+                throw new Exception("명령어 실행 중 오류 발생, 종료 코드: " + exitCode);
             }
         } catch (Exception e) {
-            return "오류 발생: " + e.getMessage();
+            throw new Exception("명령어 실행 중 오류 발생");
         }
         return output.toString();
     }

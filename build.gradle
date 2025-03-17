@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
@@ -73,7 +74,7 @@ dependencies {
     implementation 'javazoom:jlayer:1.0.1'
 
     // query log
-    //implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter")
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 
     // test
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'

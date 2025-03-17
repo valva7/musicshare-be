@@ -2,19 +2,25 @@ package org.musicshare.domain.music.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.musicshare.domain.member.model.Member;
+import org.musicshare.domain.member.model.MemberInfo;
 import org.musicshare.domain.member.model.entity.MemberEntity;
 import org.musicshare.domain.music.model.Music;
+import org.musicshare.domain.music.model.MusicInfo;
+import org.musicshare.domain.music.model.PositiveIntegerCounter;
 import org.musicshare.global.entity.TimeBaseEntity;
 
 @Entity
@@ -29,7 +35,10 @@ public class MusicEntity extends TimeBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne(mappedBy = "music")
+    private MusicFileEntity musicFile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private MemberEntity author;
 
@@ -57,6 +66,15 @@ public class MusicEntity extends TimeBaseEntity {
         this.rating = music.getInfo().getRating();
         this.downloadCount = music.getInfo().getDownloadCount();
         this.likeCount = music.getInfo().getLikeCount();
+    }
+
+    public Music toMusic() {
+        return Music.builder()
+            .id(this.id)
+            .info(new MusicInfo(this.title, this.theme, this.mood, this.genre, this.tags, this.duration, this.description, this.rating, this.downloadCount, this.likeCount))
+            .author(new Member(this.author.getId(), new MemberInfo(this.author.getNickname(), this.author.getProfileImageUrl())))
+            .likeCount(new PositiveIntegerCounter(this.likeCount))
+            .build();
     }
 
 }

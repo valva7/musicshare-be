@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 public class S3Uploader {
+
+    private final String MUSIC_UPLOAD_DIR = "music/";
 
     private final AmazonS3 amazonS3;
     private final String bucket;
@@ -30,10 +34,9 @@ public class S3Uploader {
         String originalFileName = multipartFile.getOriginalFilename();
 
         // UUID를 파일명에 추가
-        String uuid = UUID.randomUUID().toString();
-        String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
+        String uniqueFileName = createUniqueFileName(Objects.requireNonNull(originalFileName));
 
-        String fileName = "music" + "/" + uniqueFileName;
+        String fileName = MUSIC_UPLOAD_DIR + uniqueFileName;
         File uploadFile = convert(multipartFile);
 
         String uploadFileUrl = putS3(uploadFile, fileName);
@@ -41,27 +44,18 @@ public class S3Uploader {
         return uploadFileUrl;
     }
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
-        // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
-        String originalFileName = multipartFile.getOriginalFilename();
-
-        // UUID를 파일명에 추가
-        String uuid = UUID.randomUUID().toString();
-        String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
-
-        String fileName = dirName + "/" + uniqueFileName;
-        log.info("fileName: " + fileName);
-        File uploadFile = convert(multipartFile);
-
-        String uploadFileUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
-        return uploadFileUrl;
+    public void deleteFile(String fileName) {
+        // URL에서 Directory만 추출
+        String[] split = fileName.split(".com");
+        // URL 디코딩을 통해 원래의 파일 이름을 가져옴
+        String decodedFileName = URLDecoder.decode(split[1], StandardCharsets.UTF_8);
+        log.info("Deleting file from S3: {}", decodedFileName);
+        amazonS3.deleteObject(bucket, decodedFileName);
     }
 
     private File convert(MultipartFile file) throws IOException {
         String originalFileName = file.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-        String uniqueFileName = uuid + "_" + originalFileName.replaceAll("\\s", "_");
+        String uniqueFileName = createUniqueFileName(Objects.requireNonNull(originalFileName));
 
         File convertFile = new File(uniqueFileName);
         if (convertFile.createNewFile()) {
@@ -77,8 +71,6 @@ public class S3Uploader {
     }
 
     private String putS3(File uploadFile, String fileName) {
-//        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile)
-//                .withCannedAcl(CannedAccessControlList.PublicRead));
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile));
         return amazonS3.getUrl(bucket, fileName).toString();
     }
@@ -91,22 +83,9 @@ public class S3Uploader {
         }
     }
 
-    public void deleteFile(String fileName) {
-        try {
-            // URL 디코딩을 통해 원래의 파일 이름을 가져옵니다.
-            String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
-            log.info("Deleting file from S3: " + decodedFileName);
-            amazonS3.deleteObject(bucket, decodedFileName);
-        } catch (UnsupportedEncodingException e) {
-            log.error("Error while decoding the file name: {}", e.getMessage());
-        }
+    private static String createUniqueFileName(String originalFileName) {
+        String uuid = UUID.randomUUID().toString();
+        return uuid + "_" + originalFileName.replaceAll("\\s", "_");
     }
 
-    public String updateFile(MultipartFile newFile, String oldFileName, String dirName) throws IOException {
-        // 기존 파일 삭제
-        log.info("S3 oldFileName: " + oldFileName);
-        deleteFile(oldFileName);
-        // 새 파일 업로드
-        return upload(newFile, dirName);
-    }
 }

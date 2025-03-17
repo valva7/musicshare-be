@@ -1,5 +1,6 @@
 package org.musicshare.domain.music.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,18 +11,19 @@ import org.musicshare.domain.member.model.Member;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Music {
 
     private Long id;
     private MusicInfo info;
     private Member author;
-    private Comment comment;
+    private PositiveIntegerCounter likeCount;
 
-    public Music(Long id, MusicInfo info, Member author, Comment comment) {
+    public Music(Long id, MusicInfo info, Member author) {
         this.id = id;
         this.info = info;
         this.author = author;
-        this.comment = comment;
+        this.likeCount = new PositiveIntegerCounter();
     }
 
 }

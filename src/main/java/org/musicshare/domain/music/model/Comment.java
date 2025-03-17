@@ -4,18 +4,22 @@ package org.musicshare.domain.music.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.musicshare.domain.member.model.Member;
 
 @Builder
 @Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
 
-    private final Long id;
-    private final Member author;
-    private final Music music;
-    private final String content;
-    private final PositiveIntegerCounter likeCount;
+    private Long id;
+    private Member author;
+    private Music music;
+    private String content;
+    private PositiveIntegerCounter likeCount;
 
     public Comment(Long id, Member author, Music music, String content) {
         if(author == null) {
