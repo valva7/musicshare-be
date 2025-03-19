@@ -1,7 +1,17 @@
 package org.musicshare.domain.music.repository;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import static io.lettuce.core.GeoArgs.Unit.m;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
+import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.musicshare.domain.music.dto.res.TopTenMusicCurrentRes;
 import org.musicshare.domain.music.model.Music;
 import org.musicshare.domain.music.model.entity.MusicEntity;
 import org.springframework.stereotype.Repository;
@@ -10,7 +20,7 @@ import org.musicshare.domain.music.model.entity.QMusicFileEntity;
 import org.musicshare.domain.member.model.entity.QMemberEntity;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MusicRepositoryImpl implements MusicRepository{
 
     private final JpaMusicRepository jpaMusicRepository;
@@ -24,6 +34,49 @@ public class MusicRepositoryImpl implements MusicRepository{
     public Music findMusicById(Long id) {
         MusicEntity music = jpaMusicRepository.findById(id).orElseThrow();
         return music.toMusic();
+    }
+
+    public List<TopTenMusicCurrentRes> findTop10ByCurrentMonthOrWeekOrderByLikes(String genre) {
+        LocalDate now = LocalDate.now();
+        String currentMonth = now.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        int currentWeek = now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        int currentYear = now.getYear();
+
+        return queryFactory.select(
+            Projections.constructor(TopTenMusicCurrentRes.class,
+                member.id.as("memberId"),
+                member.nickname.as("nickname"),
+                member.profileImageUrl.as("profileImageUrl"),
+                music.id.as("musicId"),
+                music.title.as("title"),
+                music.duration.as("duration"),
+                music.genre.as("genre"),
+                music.mood.as("mood"),
+                musicFile.url.as("url"),
+                music.likeCount.as("likeCount")
+            ))
+            .from(music)
+                .leftJoin(musicFile).on(music.id.eq(musicFile.id))
+                .leftJoin(member).on(music.author.eq(member))
+            .where(
+                music.regDt.year().stringValue().concat("-").concat(music.regDt.month().stringValue()).eq(currentMonth)
+                    .or(
+                        Expressions.numberTemplate(Integer.class, "YEARWEEK({0}, 1)", music.regDt)
+                            .eq(currentYear * 100 + currentWeek)
+                    )
+                    ,hasGenre(genre)
+            )
+            .orderBy(music.likeCount.desc())
+            .limit(10)
+            .fetch();
+    }
+
+    private BooleanExpression hasGenre(String genre) {
+        if (genre == null) {
+            return null;
+        }
+
+        return music.genre.eq(genre);
     }
 
 }

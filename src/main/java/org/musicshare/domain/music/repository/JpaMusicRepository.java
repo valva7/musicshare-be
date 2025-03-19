@@ -15,6 +15,7 @@ public interface JpaMusicRepository extends JpaRepository<MusicEntity, Long> {
         "m.id, " +
         "m.title, " +
         "m.duration, " +
+        "m.genre, " +
         "m.mood, " +
         "mf.url, " +
         "m.likeCount) " +

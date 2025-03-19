@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.musicshare.domain.music.repository.MusicRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ public class MusicService {
     private final S3Uploader s3Uploader;
 
     private final JpaMusicRepository jpaMusicRepository;
+    private final MusicRepository musicRepository;
     private final JpaMusicFileRepository jpaMusicFileRepository;
     private final MemberRepository memberRepository;
 
@@ -58,8 +60,8 @@ public class MusicService {
         }
     }
 
-    public List<TopTenMusicCurrentRes> getTop10ByCurrentMonthOrWeekOrderByLikes(){
-        return jpaMusicRepository.findTop10ByCurrentMonthOrWeekOrderByLikes();
+    public List<TopTenMusicCurrentRes> getTop10ByCurrentMonthOrWeekOrderByLikes(String genre){
+        return musicRepository.findTop10ByCurrentMonthOrWeekOrderByLikes(genre);
     }
 
     // ============================================================ Inner Method ============================================================

@@ -34,7 +34,7 @@ public class CommentService {
         jpaCommentRepository.save(commentEntity);
     }
 
-    public List<TopTenMusicCommentRes> getTopTenSelectMusicCommentList(UserAuth user, Long musicId) {
+    public List<TopTenMusicCommentRes> getTopTenSelectMusicCommentList(Long musicId) {
         return jpaCommentRepository.findCommentsByMusicId(musicId);
     }
 

@@ -33,7 +33,7 @@ public class MusicAuthController {
         if (file.isEmpty()) {
             return Response.error(ErrorCode.INVALID_INPUT_VALUE);
         }
-        musicService.uploadMusicFile(user, file, title, genre, theme, description, tags);
+        musicService.uploadMusicFile(user, file, title, description, genre, theme, tags);
         return Response.ok("업로드 성공했습니다.");
     }
 

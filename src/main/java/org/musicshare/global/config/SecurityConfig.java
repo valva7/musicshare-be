@@ -40,7 +40,7 @@ public class SecurityConfig {
         "/main/**",
         "/auth/**",
         "/music/public/**",
-        "/comment/**"
+        "/comment/public/**"
     };
 
     @Bean
