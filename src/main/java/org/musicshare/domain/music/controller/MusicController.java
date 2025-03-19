@@ -1,9 +1,10 @@
 package org.musicshare.domain.music.controller;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.musicshare.domain.music.dto.res.MusicDetailRes;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,12 @@ public class MusicController {
     ) {
         List<TopTenMusicCurrentRes> result = musicService.getTop10ByCurrentMonthOrWeekOrderByLikes(genre);
         return Response.ok(result);
+    }
+
+    @GetMapping("/{musicId}")
+    public Response<MusicDetailRes> getMusicDetail(@PathVariable Long musicId) {
+        MusicDetailRes musicDetail = musicService.getMusicDetail(musicId);
+        return Response.ok(musicDetail);
     }
 
 }

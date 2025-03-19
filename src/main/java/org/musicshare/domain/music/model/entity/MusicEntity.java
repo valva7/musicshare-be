@@ -49,6 +49,7 @@ public class MusicEntity extends TimeBaseEntity {
     private String mood;
     private String genre;
     private String tags;
+    private int bpm;
     private String duration;
     private String description;
     private double rating;
@@ -62,6 +63,8 @@ public class MusicEntity extends TimeBaseEntity {
         this.theme = music.getInfo().getTheme();
         this.mood = music.getInfo().getMood();
         this.genre = music.getInfo().getGenre();
+        this.tags = music.getInfo().getTags();
+        this.bpm = music.getInfo().getBpm();
         this.duration = music.getInfo().getDuration();
         this.description = music.getInfo().getDescription();
         this.rating = music.getInfo().getRating();
@@ -72,7 +75,7 @@ public class MusicEntity extends TimeBaseEntity {
     public Music toMusic() {
         return Music.builder()
             .id(this.id)
-            .info(new MusicInfo(this.title, this.theme, this.mood, this.genre, this.tags, this.duration, this.description, this.rating, this.downloadCount, this.likeCount))
+            .info(new MusicInfo(this.title, this.theme, this.mood, this.genre, this.tags, this.bpm, this.duration, this.description, this.rating, this.downloadCount, this.likeCount))
             .author(new Member(this.author.getId(), new MemberInfo(this.author.getNickname(), this.author.getProfileImageUrl())))
             .likeCount(new PositiveIntegerCounter(this.likeCount))
             .build();

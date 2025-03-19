@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.musicshare.domain.music.dto.res.MusicDetailRes;
 import org.musicshare.domain.music.repository.MusicRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,10 @@ public class MusicService {
         return musicRepository.findTop10ByCurrentMonthOrWeekOrderByLikes(genre);
     }
 
+    public MusicDetailRes getMusicDetail(Long musicId){
+        return jpaMusicRepository.findMusicById(musicId);
+    }
+
     // ============================================================ Inner Method ============================================================
     private MusicInfo analyzeMusic(MultipartFile file, String title, String description, String genre, String theme, String tags) throws Exception {
         // FFMPEG으로 음악 특징 분석
@@ -74,9 +79,10 @@ public class MusicService {
 
         // 음악 분석 정보
         String duration = musicAnalysisData.substring(musicAnalysisData.indexOf("Duration Data :") + "Duration Data :".length(), musicAnalysisData.indexOf("\n"));
+        int bpm = Integer.parseInt(musicAnalysisData.substring(musicAnalysisData.indexOf("BPM Data :") + "BPM Data :".length(), musicAnalysisData.indexOf("\n")));
         String mood = gptRes.getChoices().get(0).getMessage().getContent();
 
-        return new MusicInfo(title, theme, mood, genre, tags, duration, description, 0, 0, 0);
+        return new MusicInfo(title, theme, mood, genre, tags, bpm, duration, description, 0, 0, 0);
     }
 
     private String uploadMusicFileToS3(MultipartFile file) throws IOException {

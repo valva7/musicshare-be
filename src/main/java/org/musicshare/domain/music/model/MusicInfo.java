@@ -17,18 +17,20 @@ public class MusicInfo {
     private String mood;
     private String genre;
     private String tags;
+    private int bpm;
     private String duration;
     private String description;
     private double rating;
     private int downloadCount;
     private int likeCount;
 
-    public MusicInfo(String title, String theme, String mood, String genre, String tags, String duration, String description, double rating, int downloadCount, int likeCount) {
+    public MusicInfo(String title, String theme, String mood, String genre, String tags, int bpm, String duration, String description, double rating, int downloadCount, int likeCount) {
         this.title = title;
         this.theme = theme;
         this.mood = mood;
         this.genre = genre;
         this.tags = tags;
+        this.bpm = bpm;
         this.duration = duration;
         this.description = description;
         this.rating = rating;
