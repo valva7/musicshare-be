@@ -10,6 +10,7 @@ public record MusicDetailRes(
     String mood,
     String genre,
     String duration,
+    String url,
     int bpm,
     double rating
 ) {
