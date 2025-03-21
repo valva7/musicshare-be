@@ -28,7 +28,7 @@ public class CommentService {
         Member member = memberRepository.findMemberById(user.getUserId());
         Music music = musicRepository.findMusicById(req.musicId());
 
-        Comment comment = new Comment(null, member, music, req.content());
+        Comment comment = new Comment(null, member, music, req.content(), req.rating());
         CommentEntity commentEntity = new CommentEntity(comment);
 
         jpaCommentRepository.save(commentEntity);

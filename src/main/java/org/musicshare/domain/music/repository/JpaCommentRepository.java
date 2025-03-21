@@ -15,6 +15,7 @@ public interface JpaCommentRepository extends JpaRepository<CommentEntity, Long>
         + "mb.nickname, "
         + "mb.profileImageUrl, "
         + "c.content, "
+        + "c.rating, "
         + "c.likeCount, "
         + "c.regDt) " +
         "FROM CommentEntity c " +

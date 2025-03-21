@@ -46,14 +46,14 @@ public class AuthService {
 
             // Jwt 토큰 발급
             String refreshToken = tokenProvider.createRefreshToken(newMemberEntity.getId());
-            String accessToken = tokenProvider.createAccessToken(newMemberEntity.getId());
+            String accessToken = tokenProvider.createAccessToken(newMember);
 
             return new LoginTokenRes(accessToken, refreshToken);
         }
 
         // Jwt 토큰 발급
         String refreshToken = tokenProvider.createRefreshToken(member.getId());
-        String accessToken = tokenProvider.createAccessToken(member.getId());
+        String accessToken = tokenProvider.createAccessToken(member);
 
         return new LoginTokenRes(accessToken, refreshToken);
     }

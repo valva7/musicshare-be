@@ -19,9 +19,10 @@ public class Comment {
     private Member author;
     private Music music;
     private String content;
+    private int rating;
     private PositiveIntegerCounter likeCount;
 
-    public Comment(Long id, Member author, Music music, String content) {
+    public Comment(Long id, Member author, Music music, String content, int rating) {
         if(author == null) {
             throw new IllegalArgumentException();
         }
@@ -33,6 +34,7 @@ public class Comment {
         this.author = author;
         this.music = music;
         this.content = content;
+        this.rating = rating;
         this.likeCount = new PositiveIntegerCounter();
     }
 

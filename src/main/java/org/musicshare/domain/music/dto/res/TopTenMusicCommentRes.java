@@ -9,6 +9,7 @@ public record TopTenMusicCommentRes(
     String authorNickname,
     String authorProfile,
     String content,
+    int rating,
     int likeCount,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm:ss", timezone = "Asia/Seoul")
     LocalDateTime regDt

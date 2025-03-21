@@ -43,6 +43,7 @@ public class CommentEntity extends TimeBaseEntity {
     @Column(nullable = false, length = 500)
     private String content;
 
+    private int rating;
     private int likeCount;
 
     public CommentEntity(Comment comment) {
@@ -50,6 +51,7 @@ public class CommentEntity extends TimeBaseEntity {
         this.author = new MemberEntity(comment.getAuthor());
         this.music = new MusicEntity(comment.getMusic());
         this.content = comment.getContent();
+        this.rating = comment.getRating();
         this.likeCount = 0;
     }
 

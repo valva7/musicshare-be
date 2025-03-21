@@ -78,8 +78,8 @@ public class MusicService {
         GptRes gptRes = openAiService.analyzeMusicWithGPT(musicAnalysisData);
 
         // 음악 분석 정보
-        String duration = musicAnalysisData.substring(musicAnalysisData.indexOf("Duration Data :") + "Duration Data :".length(), musicAnalysisData.indexOf("\n"));
-        int bpm = Integer.parseInt(musicAnalysisData.substring(musicAnalysisData.indexOf("BPM Data :") + "BPM Data :".length(), musicAnalysisData.indexOf("\n")));
+        String duration = extractDuration(musicAnalysisData);
+        int bpm = extractBPM(musicAnalysisData);
         String mood = gptRes.getChoices().get(0).getMessage().getContent();
 
         return new MusicInfo(title, theme, mood, genre, tags, bpm, duration, description, 0, 0, 0);
@@ -115,6 +115,43 @@ public class MusicService {
             s3Uploader.deleteFile(uploadUrl);
         }
         log.error("데이터 저장 중 오류 발생. S3에서 파일 삭제: {}", uploadUrl);
+    }
+
+    // test 문자열에서 Duration Data 추출
+    public static String extractDuration(String test) {
+        String durationPrefix = "Duration Data :";
+        int startIdx = test.indexOf(durationPrefix);
+
+        if (startIdx == -1) {
+            return ""; // Duration 데이터가 없는 경우 처리
+        }
+
+        // Duration 데이터 시작 위치를 찾아서 그 뒤에 있는 값을 추출
+        startIdx += durationPrefix.length();
+        int endIdx = test.indexOf("\n", startIdx);
+
+        if (endIdx == -1) {
+            endIdx = test.length(); // '\n'이 없으면 문자열 끝까지
+        }
+
+        return test.substring(startIdx, endIdx).trim(); // Duration 값을 추출하여 리턴
+    }
+
+    // test 문자열에서 BPM 값 추출
+    public static int extractBPM(String analysisData) {
+        String bpmPrefix = "BPM Data :";
+        int startIdx = analysisData.indexOf(bpmPrefix);
+
+        // BPM 데이터 시작 위치를 찾아서 그 뒤에 있는 값을 추출
+        startIdx += bpmPrefix.length();
+        int endIdx = analysisData.indexOf("bpm", startIdx);
+
+        if (endIdx == -1) {
+            endIdx = analysisData.length(); // '\n'이 없으면 문자열 끝까지
+        }
+
+        // 소수 버리고 정수만
+        return (int) Double.parseDouble(analysisData.substring(startIdx, endIdx).trim());
     }
 
 }

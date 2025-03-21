@@ -1,11 +1,17 @@
 package org.musicshare.domain.auth.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
+import org.musicshare.domain.member.model.Member;
+import org.musicshare.domain.member.model.entity.MemberEntity;
+import org.musicshare.domain.member.repository.JpaMemberRepository;
+import org.musicshare.global.exception.MemberNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,56 +23,62 @@ public class TokenProvider {
     private static final long TOKEN_VALID_TIME = 1000L * 60 * 60; // 1시간
     private static long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 1440; // 1 day
 
-    public TokenProvider(@Value("${secret-key}") String secretKey) {
+    private final JpaMemberRepository jpaMemberRepository;
+
+    public TokenProvider(@Value("${secret-key}") String secretKey, JpaMemberRepository jpaMemberRepository) {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.jpaMemberRepository = jpaMemberRepository;
     }
 
     // 최초 액세스 토큰 생성
-    public String createAccessToken(Long userId) {
-        Claims claims = Jwts.claims()
-                .subject(userId.toString())
-                .build();
+    public String createAccessToken(Member member) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + TOKEN_VALID_TIME);
 
+        // Claims 객체 생성 및 값 설정
+        Claims claims = Jwts.claims();
+        claims.put("nickname", new String(member.getInfo().getNickname().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
+
         return Jwts.builder()
-                .claims(claims)
-                .issuedAt(now)
-                .expiration(validity)
-                .signWith(key)
+                .setClaims(claims)
+                .setSubject(String.valueOf(member.getId()))
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
     // 리프레시 토큰을 통해 새로운 액세스 토큰 생성
     public String createNewAccessToken(String refreshToken) {
         Long userId = getUserId(refreshToken);
-        return createAccessToken(userId);
+        MemberEntity memberEntity = jpaMemberRepository.findById(userId).orElseThrow(MemberNotFoundException::new);
+        return createAccessToken(memberEntity.toMember());
     }
 
     // 리프레시 토큰 생성
     public String createRefreshToken(Long userId) {
-        Claims claims = Jwts.claims()
-            .subject(userId.toString())
-            .build();
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
 
+        // Claims 객체 생성 및 값 설정
+        Claims claims = Jwts.claims()
+            .setSubject(userId.toString());
+
         return Jwts.builder()
-            .claims(claims)
-            .issuedAt(now)
-            .expiration(validity)
-            .signWith(key)
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(SignatureAlgorithm.HS256, key)
             .compact();
     }
 
     public Long getUserId(String token) {
         return Long.parseLong(
-                Jwts.parser()
-                        .verifyWith(key)
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload()
-                        .getSubject()
+            Jwts.parser()
+                .setSigningKey(key)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject()
         );
     }
 
@@ -74,10 +86,9 @@ public class TokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token.substring(7))
-                .getPayload();
+                .setSigningKey(key)
+                .parseClaimsJws(token.substring(7)) // Bearer 제거
+                .getBody();
             return true;
 
         } catch (ExpiredJwtException e) {
