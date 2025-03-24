@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.musicshare.domain.music.dto.res.TopTenMusicCurrentRes;
+import org.musicshare.domain.music.dto.res.PopularMusicRes;
 import org.musicshare.domain.music.service.MusicService;
 import org.musicshare.global.response.Response;
 
@@ -20,10 +20,10 @@ public class MusicController {
     private final MusicService musicService;
 
     @GetMapping("/hot/current")
-    public Response<List<TopTenMusicCurrentRes>> getTop10ByCurrentMonthOrWeekOrderByLikes(
+    public Response<List<PopularMusicRes>> getTop10ByCurrentMonthOrWeekOrderByLikes(
         @RequestParam(required = false) String genre
     ) {
-        List<TopTenMusicCurrentRes> result = musicService.getTop10ByCurrentMonthOrWeekOrderByLikes(genre);
+        List<PopularMusicRes> result = musicService.getTop10ByCurrentMonthOrWeekOrderByLikes(genre);
         return Response.ok(result);
     }
 

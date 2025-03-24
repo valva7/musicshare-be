@@ -12,15 +12,16 @@ public class PositiveIntegerCounter {
         this.count = count;
     }
 
-    public void increase() {
+    public int increase() {
         this.count ++;
+        return this.count;
     }
 
-    public void decrease() {
+    public int decrease() {
         if(count <= 0) {
-            return;
+            return 0;
         }
-        this.count --;
+        return this.count --;
     }
 
     public int getCount() {

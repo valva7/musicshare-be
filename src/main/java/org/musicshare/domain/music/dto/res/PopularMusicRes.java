@@ -1,6 +1,6 @@
 package org.musicshare.domain.music.dto.res;
 
-public record TopTenMusicCurrentRes(
+public record PopularMusicRes(
     Long memberId,
     String nickname,
     String profileImageUrl,

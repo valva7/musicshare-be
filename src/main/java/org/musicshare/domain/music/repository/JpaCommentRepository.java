@@ -22,7 +22,7 @@ public interface JpaCommentRepository extends JpaRepository<CommentEntity, Long>
         "LEFT JOIN MusicEntity m ON c.music.id = m.id " +
         "LEFT JOIN MemberEntity mb ON c.author.id = mb.id " +
         "WHERE m.id = :musicId " +
-        "ORDER BY c.likeCount DESC")
+        "ORDER BY c.id ASC")
     List<TopTenMusicCommentRes> findCommentsByMusicId(@Param("musicId") Long musicId);
 
 }

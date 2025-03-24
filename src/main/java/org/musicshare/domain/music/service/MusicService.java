@@ -1,5 +1,6 @@
 package org.musicshare.domain.music.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import org.musicshare.domain.ai.dto.res.GptRes;
 import org.musicshare.domain.ai.service.OpenAiService;
 import org.musicshare.domain.file.service.S3Uploader;
 import org.musicshare.domain.member.model.Member;
-import org.musicshare.domain.music.dto.res.TopTenMusicCurrentRes;
+import org.musicshare.domain.music.dto.res.PopularMusicRes;
 import org.musicshare.domain.music.model.Music;
 import org.musicshare.domain.music.model.MusicFile;
 import org.musicshare.domain.music.model.MusicFileInfo;
@@ -41,6 +42,8 @@ public class MusicService {
     private final JpaMusicFileRepository jpaMusicFileRepository;
     private final MemberRepository memberRepository;
 
+    private final EntityManager entityManager;
+
 
     @Transactional
     public void uploadMusicFile(UserAuth userAuth, MultipartFile file, String title, String description, String genre, String theme, String tags) throws Exception {
@@ -61,7 +64,7 @@ public class MusicService {
         }
     }
 
-    public List<TopTenMusicCurrentRes> getTop10ByCurrentMonthOrWeekOrderByLikes(String genre){
+    public List<PopularMusicRes> getTop10ByCurrentMonthOrWeekOrderByLikes(String genre) {
         return musicRepository.findTop10ByCurrentMonthOrWeekOrderByLikes(genre);
     }
 
@@ -82,7 +85,7 @@ public class MusicService {
         int bpm = extractBPM(musicAnalysisData);
         String mood = gptRes.getChoices().get(0).getMessage().getContent();
 
-        return new MusicInfo(title, theme, mood, genre, tags, bpm, duration, description, 0, 0, 0);
+        return new MusicInfo(title, theme, mood, genre, tags, bpm, duration, description, 0, 0, 0, 0);
     }
 
     private String uploadMusicFileToS3(MultipartFile file) throws IOException {
@@ -100,6 +103,11 @@ public class MusicService {
         jpaMusicRepository.save(musicEntity);
         music.setId(musicEntity.getId());
         return music;
+    }
+
+    public void updateMusic(Music music) {
+        MusicEntity musicEntity = new MusicEntity(music);
+        entityManager.merge(musicEntity);
     }
 
     private void saveMusicFile(MultipartFile file, Music music, String uploadUrl) {

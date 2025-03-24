@@ -2,6 +2,7 @@ package org.musicshare.domain.music.controller;
 
 
 import lombok.AllArgsConstructor;
+import org.musicshare.common.utils.FileValidator;
 import org.musicshare.domain.music.service.MusicService;
 import org.musicshare.global.exception.ErrorCode;
 import org.musicshare.global.pricipal.AuthPrincipal;
@@ -33,6 +34,10 @@ public class MusicAuthController {
         if (file.isEmpty()) {
             return Response.error(ErrorCode.INVALID_INPUT_VALUE);
         }
+        if(!FileValidator.isValidFile(file)) {
+            return Response.error(ErrorCode.INVALID_INPUT_VALUE);
+        }
+
         musicService.uploadMusicFile(user, file, title, description, genre, theme, tags);
         return Response.ok("업로드 성공했습니다.");
     }
