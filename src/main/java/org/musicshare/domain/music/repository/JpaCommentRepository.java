@@ -1,11 +1,11 @@
 package org.musicshare.domain.music.repository;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
 import org.musicshare.domain.music.dto.res.TopTenMusicCommentRes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.musicshare.domain.music.model.entity.CommentEntity;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface JpaCommentRepository extends JpaRepository<CommentEntity, Long> {
 

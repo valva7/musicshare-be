@@ -1,6 +1,7 @@
 package org.musicshare.domain.like.model.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.musicshare.domain.member.model.entity.MemberEntity;
+import org.musicshare.domain.like.LikeType;
+import org.musicshare.domain.like.model.Like;
+import org.musicshare.domain.member.model.Member;
+import org.musicshare.domain.music.model.Comment;
+import org.musicshare.domain.music.model.Music;
 import org.musicshare.global.entity.TimeBaseEntity;
 
 @Entity
@@ -25,17 +30,10 @@ import org.musicshare.global.entity.TimeBaseEntity;
 @Builder
 @Table(name = "like_entity")
 public class LikeEntity extends TimeBaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private LikeIdEntity id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "like_user_id", nullable = false)
-    private MemberEntity likeUser;
-
-    @Column(nullable = false)
-    private Long targetId;
-
-    @Column(nullable = false)
-    private String targetType;
+    public LikeEntity(Like like) {
+        this.id = new LikeIdEntity(like.getTargetId(), like.getMember().getId(), like.getTargetType());
+    }
 }

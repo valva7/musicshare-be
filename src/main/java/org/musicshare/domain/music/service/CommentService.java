@@ -14,6 +14,7 @@ import org.musicshare.domain.music.model.entity.CommentEntity;
 import org.musicshare.domain.music.repository.JpaCommentRepository;
 import org.musicshare.domain.music.repository.MusicRepository;
 import org.musicshare.global.pricipal.UserAuth;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -34,9 +35,9 @@ public class CommentService {
     private final MusicService musicService;
 
     @Retryable(
-        value = OptimisticLockException.class,  // 낙관락 충돌 시 재시도
-        maxAttempts = 3,  // 최대 3번 재시도
-        backoff = @Backoff(delay = 100) // 100ms 대기 후 재시도
+        value = ObjectOptimisticLockingFailureException.class,
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 100)
     )
     @Transactional
     public void createComment(UserAuth user, CreateCommentReq req) {

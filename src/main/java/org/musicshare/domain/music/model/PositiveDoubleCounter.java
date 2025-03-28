@@ -1,5 +1,8 @@
 package org.musicshare.domain.music.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class PositiveDoubleCounter {
 
     private double count;
@@ -23,11 +26,10 @@ public class PositiveDoubleCounter {
     }
 
     public double average(double addCount, int averageCount) {
-        double before = this.count * averageCount - 1;
-        this.count = (before + addCount) / averageCount;
+        BigDecimal before = BigDecimal.valueOf(this.count).add(BigDecimal.valueOf(averageCount - 1)).setScale(2, RoundingMode.DOWN);
+        before = before.add(BigDecimal.valueOf(addCount)).divide(BigDecimal.valueOf(averageCount)).setScale(2, RoundingMode.DOWN);
 
-        // 소수 둘째 자리부터 버리기
-        this.count = Math.floor(this.count * 100) / 100.0;
+        this.count = before.doubleValue();
 
         return this.count;
     }

@@ -100,14 +100,16 @@ public class MusicService {
     private Music saveMusic(MusicInfo musicInfo, Member member) {
         Music music = new Music(null, musicInfo, member);
         MusicEntity musicEntity = new MusicEntity(music);
+
         jpaMusicRepository.save(musicEntity);
+
         music.setId(musicEntity.getId());
         return music;
     }
 
     public void updateMusic(Music music) {
         MusicEntity musicEntity = new MusicEntity(music);
-        entityManager.merge(musicEntity);
+        jpaMusicRepository.save(musicEntity);
     }
 
     private void saveMusicFile(MultipartFile file, Music music, String uploadUrl) {
