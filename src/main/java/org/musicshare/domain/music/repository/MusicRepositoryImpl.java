@@ -4,13 +4,16 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.music.dto.res.PopularMusicRes;
 import org.musicshare.domain.music.model.Music;
+import org.musicshare.domain.music.model.MusicInfo;
 import org.musicshare.domain.music.model.entity.MusicEntity;
 import org.springframework.stereotype.Repository;
 import org.musicshare.domain.music.model.entity.QMusicEntity;
@@ -22,6 +25,7 @@ import org.musicshare.domain.member.model.entity.QMemberEntity;
 public class MusicRepositoryImpl implements MusicRepository{
 
     private final JpaMusicRepository jpaMusicRepository;
+    private final EntityManager entityManager;
 
     private final JPAQueryFactory queryFactory;
 
@@ -32,6 +36,24 @@ public class MusicRepositoryImpl implements MusicRepository{
     public Music findMusicById(Long id) {
         MusicEntity music = jpaMusicRepository.findById(id).orElseThrow();
         return music.toMusic();
+    }
+
+    public Music saveMusic(MusicInfo musicInfo, Member member) {
+        Music music = new Music(null, musicInfo, member);
+        MusicEntity musicEntity = new MusicEntity(music);
+
+        entityManager.persist(musicEntity);
+        entityManager.flush();
+
+        music.setId(musicEntity.getId());
+        return music;
+    }
+
+    public void updateMusic(Music music) {
+        MusicEntity musicEntity = new MusicEntity(music);
+
+        entityManager.merge(musicEntity);
+        entityManager.flush();
     }
 
     public List<PopularMusicRes> findTop10ByCurrentMonthOrWeekOrderByLikes(String genre) {

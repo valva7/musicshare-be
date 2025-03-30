@@ -28,7 +28,6 @@ import org.musicshare.global.entity.TimeBaseEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "music")
 public class MusicEntity extends TimeBaseEntity {
     @Id

@@ -33,8 +33,6 @@ public class LikeService {
     private final MusicRepository musicRepository;
     private final MemberRepository memberRepository;
 
-    private final MusicService musicService;
-
     @Retryable(
         value = ObjectOptimisticLockingFailureException.class,
         maxAttempts = 3,
@@ -56,7 +54,7 @@ public class LikeService {
             saveLike(like);
         }
 
-        musicService.updateMusic(music);
+        musicRepository.updateMusic(music);
     }
 
     public MusicLikedRes getMusicLiked(UserAuth user, Long musicId) {

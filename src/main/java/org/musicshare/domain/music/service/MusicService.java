@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.music.dto.res.MusicDetailRes;
+import org.musicshare.domain.music.repository.MusicFileRepository;
 import org.musicshare.domain.music.repository.MusicRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class MusicService {
     private final JpaMusicRepository jpaMusicRepository;
     private final MusicRepository musicRepository;
     private final JpaMusicFileRepository jpaMusicFileRepository;
+    private final MusicFileRepository musicFileRepository;
     private final MemberRepository memberRepository;
 
     private final EntityManager entityManager;
@@ -52,12 +54,12 @@ public class MusicService {
             Member member = memberRepository.findMemberById(userAuth.getUserId());
             // 음악 분석 및 음악정보 생성
             MusicInfo musicInfo = analyzeMusic(file, title, description, genre, theme, tags);
-            Music music = saveMusic(musicInfo, member);
+            Music music = musicRepository.saveMusic(musicInfo, member);
 
             // 음악 파일 S3 업로드
             uploadUrl = uploadMusicFileToS3(file);
 
-            saveMusicFile(file, music, uploadUrl);
+            musicFileRepository.saveMusicFile(file.getOriginalFilename(), music, uploadUrl);
         } catch (DataIntegrityViolationException | PersistenceException e) {
             // JPA 예외 발생 시 S3에 업로드한 파일 삭제
             handleException(uploadUrl);
@@ -97,28 +99,6 @@ public class MusicService {
         }
     }
 
-    private Music saveMusic(MusicInfo musicInfo, Member member) {
-        Music music = new Music(null, musicInfo, member);
-        MusicEntity musicEntity = new MusicEntity(music);
-
-        jpaMusicRepository.save(musicEntity);
-
-        music.setId(musicEntity.getId());
-        return music;
-    }
-
-    public void updateMusic(Music music) {
-        MusicEntity musicEntity = new MusicEntity(music);
-        jpaMusicRepository.save(musicEntity);
-    }
-
-    private void saveMusicFile(MultipartFile file, Music music, String uploadUrl) {
-        MusicFileInfo musicFileInfo = new MusicFileInfo(file.getOriginalFilename(), null, uploadUrl);
-        MusicFile musicFile = new MusicFile(null, music, musicFileInfo);
-        MusicFileEntity musicFileEntity = new MusicFileEntity(musicFile);
-        jpaMusicFileRepository.save(musicFileEntity);
-    }
-
     private void handleException(String uploadUrl) {
         // S3에 업로드한 파일 삭제
         if (uploadUrl != null && !uploadUrl.isEmpty()) {
@@ -128,7 +108,7 @@ public class MusicService {
     }
 
     // test 문자열에서 Duration Data 추출
-    public static String extractDuration(String test) {
+    private static String extractDuration(String test) {
         String durationPrefix = "Duration Data :";
         int startIdx = test.indexOf(durationPrefix);
 
@@ -148,7 +128,7 @@ public class MusicService {
     }
 
     // test 문자열에서 BPM 값 추출
-    public static int extractBPM(String analysisData) {
+    private static int extractBPM(String analysisData) {
         String bpmPrefix = "BPM Data :";
         int startIdx = analysisData.indexOf(bpmPrefix);
 

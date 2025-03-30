@@ -32,8 +32,6 @@ public class CommentService {
     private final JpaCommentRepository jpaCommentRepository;
     private final MemberRepository memberRepository;
 
-    private final MusicService musicService;
-
     @Retryable(
         value = ObjectOptimisticLockingFailureException.class,
         maxAttempts = 3,
@@ -49,7 +47,7 @@ public class CommentService {
         // 평점 반영
         music.getInfo().getRating().average(req.rating(), increaseCommentCount);
         // 음악 정보 업데이트
-        musicService.updateMusic(music);
+        musicRepository.updateMusic(music);
 
         // TODO: 하나의 음악에 한 사람이 여러 댓글을 작성할 수 있게 할지 고민중..
 
