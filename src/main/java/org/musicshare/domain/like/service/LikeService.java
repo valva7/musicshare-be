@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.like.LikeType;
+import org.musicshare.domain.like.dto.req.LikeMusicReq;
+import org.musicshare.domain.like.dto.res.MusicLikedRes;
 import org.musicshare.domain.like.model.Like;
 import org.musicshare.domain.like.model.entity.LikeEntity;
 import org.musicshare.domain.like.repository.JpaLikeRepository;
@@ -39,11 +41,11 @@ public class LikeService {
         backoff = @Backoff(delay = 100)
     )
     @Transactional
-    public void likeMusic(UserAuth user,  Long musicId) {
-        Music music = musicRepository.findMusicById(musicId);
+    public void likeMusic(UserAuth user,  LikeMusicReq req) {
+        Music music = musicRepository.findMusicById(req.musicId());
         Member member = memberRepository.findMemberById(user.getUserId());
 
-        Like like = new Like(member, musicId, LikeType.MUSIC.getCode());
+        Like like = new Like(member, req.musicId(), LikeType.MUSIC.getCode());
         // 좋아요 여부 확인
         boolean check = likeRepository.checkLike(like);
         if (check) {
@@ -57,6 +59,11 @@ public class LikeService {
         musicService.updateMusic(music);
     }
 
+    public MusicLikedRes getMusicLiked(UserAuth user, Long musicId) {
+        return likeRepository.getMusicLiked(user, musicId);
+    }
+
+    // ========================================= Inner Method =========================================
     public void saveLike(Like like) {
         LikeEntity likeEntity = new LikeEntity(like);
         jpaLikeRepository.save(likeEntity);
