@@ -56,13 +56,13 @@ public class TokenProvider {
     }
 
     // 리프레시 토큰 생성
-    public String createRefreshToken(Long userId) {
+    public String createRefreshToken(Member member) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
 
         // Claims 객체 생성 및 값 설정
         Claims claims = Jwts.claims()
-            .setSubject(userId.toString());
+            .setSubject(member.getId().toString());
 
         return Jwts.builder()
             .setClaims(claims)

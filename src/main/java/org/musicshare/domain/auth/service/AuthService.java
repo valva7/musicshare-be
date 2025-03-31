@@ -48,8 +48,10 @@ public class AuthService {
             MemberEntity newMemberEntity = new MemberEntity(newMember);
             jpaMemberRepository.save(newMemberEntity);
 
+            newMember.setId(newMemberEntity.getId());
+
             // Jwt 토큰 발급
-            String refreshToken = tokenProvider.createRefreshToken(newMemberEntity.getId());
+            String refreshToken = tokenProvider.createRefreshToken(newMember);
             String accessToken = tokenProvider.createAccessToken(newMember);
 
             // firebase token 저장
@@ -59,7 +61,7 @@ public class AuthService {
         }
 
         // Jwt 토큰 발급
-        String refreshToken = tokenProvider.createRefreshToken(member.getId());
+        String refreshToken = tokenProvider.createRefreshToken(member);
         String accessToken = tokenProvider.createAccessToken(member);
 
         // firebase token 저장
