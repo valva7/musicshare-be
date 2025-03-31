@@ -29,8 +29,8 @@ public class AuthController {
 
 
     @PostMapping("/kakao-token")
-    public Response<LoginTokenRes> getKakaoToken(@RequestParam("code")String code){
-        LoginTokenRes loginTokenRes = authService.login(code);
+    public Response<LoginTokenRes> getKakaoToken(@RequestParam("code")String code, @RequestParam("fcmToken") String fcmToken) {
+        LoginTokenRes loginTokenRes = authService.login(code, fcmToken);
         return Response.ok(loginTokenRes);
     }
 

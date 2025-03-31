@@ -11,6 +11,9 @@ import org.musicshare.domain.member.model.MemberInfo;
 import org.musicshare.domain.member.model.entity.MemberEntity;
 import org.musicshare.domain.member.repository.JpaMemberRepository;
 import org.musicshare.domain.member.repository.MemberRepository;
+import org.musicshare.domain.push.entity.FcmTokenEntity;
+import org.musicshare.domain.push.repository.FcmPushRepository;
+import org.musicshare.domain.push.repository.JpaFcmPushRepository;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -22,11 +25,12 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final JpaMemberRepository jpaMemberRepository;
+    private final FcmPushRepository fcmPushRepository;
 
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public LoginTokenRes login(String code) {
+    public LoginTokenRes login(String code, String fcmToken) {
         String kakaoAccessToken = kakaoService.getAccessTokenFromKakao(code);
 
         // 카카오 유저 정보 가져오기
@@ -48,12 +52,18 @@ public class AuthService {
             String refreshToken = tokenProvider.createRefreshToken(newMemberEntity.getId());
             String accessToken = tokenProvider.createAccessToken(newMember);
 
+            // firebase token 저장
+            fcmPushRepository.firebaseTokenSave(newMember, fcmToken);
+
             return new LoginTokenRes(accessToken, refreshToken);
         }
 
         // Jwt 토큰 발급
         String refreshToken = tokenProvider.createRefreshToken(member.getId());
         String accessToken = tokenProvider.createAccessToken(member);
+
+        // firebase token 저장
+        fcmPushRepository.firebaseTokenSave(member, fcmToken);
 
         return new LoginTokenRes(accessToken, refreshToken);
     }

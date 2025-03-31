@@ -16,6 +16,7 @@ import org.musicshare.domain.member.repository.MemberRepository;
 import org.musicshare.domain.music.model.Music;
 import org.musicshare.domain.music.repository.MusicRepository;
 import org.musicshare.domain.music.service.MusicService;
+import org.musicshare.domain.push.repository.FcmPushRepository;
 import org.musicshare.global.pricipal.UserAuth;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
@@ -32,6 +33,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final MusicRepository musicRepository;
     private final MemberRepository memberRepository;
+    private final FcmPushRepository fcmPushRepository;
 
     @Retryable(
         value = ObjectOptimisticLockingFailureException.class,
@@ -52,6 +54,9 @@ public class LikeService {
         } else {
             music.getInfo().getLikeCount().increase();
             saveLike(like);
+
+            // 좋아요 알림
+            fcmPushRepository.sendLikeMessage(member, music.getAuthor());
         }
 
         musicRepository.updateMusic(music);
