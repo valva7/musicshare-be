@@ -1,10 +1,9 @@
-package org.musicshare.domain.member.model.entity;
+package org.musicshare.domain.music.model.entity;
+
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -14,7 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.musicshare.domain.music.model.entity.MusicEntity;
+import org.musicshare.domain.member.model.entity.MemberEntity;
 import org.musicshare.global.entity.TimeBaseEntity;
 
 @Entity
@@ -23,18 +22,20 @@ import org.musicshare.global.entity.TimeBaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "fan")
-public class FanEntity extends TimeBaseEntity {
+@Table(name = "my_album")
+public class MyAlbumEntity extends TimeBaseEntity {
+
     @EmbeddedId
-    private FanIdEntity id;
+    private MyAlbumIdEntity id;
 
     @ManyToOne
-    @MapsId("artistId")  // FanIdEntity.artistId 매핑
-    @JoinColumn(name = "artist_id", nullable = false)
+    @MapsId("memberId")  // MyAlbumIdEntity.memberId에 매핑
+    @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
     @ManyToOne
-    @MapsId("fanId")  // FanIdEntity.fanId 매핑
-    @JoinColumn(name = "fan_id", nullable = false)
-    private MemberEntity fan;
+    @MapsId("musicId")  // MyAlbumIdEntity.musicId에 매핑
+    @JoinColumn(name = "music_id", nullable = false)
+    private MusicEntity music;
+
 }

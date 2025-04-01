@@ -11,9 +11,7 @@ import org.musicshare.domain.member.model.MemberInfo;
 import org.musicshare.domain.member.model.entity.MemberEntity;
 import org.musicshare.domain.member.repository.JpaMemberRepository;
 import org.musicshare.domain.member.repository.MemberRepository;
-import org.musicshare.domain.push.entity.FcmTokenEntity;
 import org.musicshare.domain.push.repository.FcmPushRepository;
-import org.musicshare.domain.push.repository.JpaFcmPushRepository;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -45,9 +43,7 @@ public class AuthService {
             MemberInfo memberInfo = new MemberInfo(nickName, null);
             Member newMember = new Member(null, memberInfo);
 
-            MemberEntity newMemberEntity = new MemberEntity(newMember);
-            jpaMemberRepository.save(newMemberEntity);
-
+            MemberEntity newMemberEntity = memberRepository.saveMember(newMember);
             newMember.setId(newMemberEntity.getId());
 
             // Jwt 토큰 발급

@@ -12,6 +12,11 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     private final JpaMemberRepository jpaMemberRepository;
 
+    public MemberEntity saveMember(Member member){
+        MemberEntity memberEntity = new MemberEntity(member);
+        return jpaMemberRepository.save(memberEntity);
+    }
+
     public Member findMemberByNickname(String nickname){
         MemberEntity memberEntity = jpaMemberRepository.findByNickname(nickname);
         return memberEntity == null ? null : memberEntity.toMember();
