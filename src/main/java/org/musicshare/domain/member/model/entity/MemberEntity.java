@@ -23,7 +23,7 @@ import org.musicshare.global.entity.TimeBaseEntity;
 @AllArgsConstructor
 @Builder
 @Table(name = "member", indexes = {
-    @Index(name = "idx_nickname", columnList = "authorNickname")
+    @Index(name = "idx_nickname", columnList = "nickname")
 })
 public class MemberEntity extends TimeBaseEntity {
 
