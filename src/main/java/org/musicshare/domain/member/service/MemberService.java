@@ -12,8 +12,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberResDto getMember(Long userId) {
-        Member member = memberRepository.findMemberById(userId);
+    public MemberResDto getMember(Long memberId) {
+        Member member = memberRepository.findMemberById(memberId);
         return new MemberResDto(member);
     }
 

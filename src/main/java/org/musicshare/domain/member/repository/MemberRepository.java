@@ -9,5 +9,5 @@ public interface MemberRepository {
 
     Member findMemberByNickname(String nickname);
 
-    Member findMemberById(Long id);
+    Member findMemberById(Long memberId);
 }

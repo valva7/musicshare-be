@@ -9,23 +9,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.member.model.entity.MemberEntity;
 import org.musicshare.domain.music.model.Comment;
-import org.musicshare.domain.music.model.Music;
 import org.musicshare.global.entity.TimeBaseEntity;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "comment")
 public class CommentEntity extends TimeBaseEntity {
     @Id

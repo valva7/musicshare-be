@@ -1,6 +1,5 @@
 package org.musicshare.domain.push.service;
 
-import com.google.api.core.ApiFuture;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import lombok.RequiredArgsConstructor;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 @Tag(name="Basics", description = "회원 관리 API")
 public class MemberController {
@@ -20,8 +20,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping
-    public Response<MemberResDto> getUser(Long userId){
-        return Response.ok(memberService.getMember(userId));
+    public Response<MemberResDto> getMember(Long memberId){
+        return Response.ok(memberService.getMember(memberId));
     }
 
 }

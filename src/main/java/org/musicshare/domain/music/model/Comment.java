@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.musicshare.domain.member.model.Member;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor

@@ -10,16 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class MusicFile {
 
     private Long id;
     private Music music;
     private MusicFileInfo info;
-
-    public MusicFile(Long id, Music music, MusicFileInfo info) {
-        this.id = id;
-        this.music = music;
-        this.info = info;
-    }
 
 }
