@@ -7,6 +7,7 @@ import org.musicshare.domain.member.service.FanService;
 import org.musicshare.global.pricipal.AuthPrincipal;
 import org.musicshare.global.pricipal.UserAuth;
 import org.musicshare.global.response.Response;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class FanController {
 
     private final FanService fanService;
+
+    @GetMapping
+    public Response getFan(@AuthPrincipal UserAuth userAuth, @RequestParam Long artistId) {
+        return Response.ok(fanService.getFan(userAuth, artistId));
+    }
 
     @PostMapping
     public Response<Void> fanArtist(@AuthPrincipal UserAuth user, @RequestParam Long artistId) {

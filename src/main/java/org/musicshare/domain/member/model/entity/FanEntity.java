@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.musicshare.domain.member.model.Fan;
+import org.musicshare.domain.member.model.Member;
 import org.musicshare.global.entity.TimeBaseEntity;
 
 @Entity
@@ -24,14 +24,16 @@ public class FanEntity extends TimeBaseEntity {
     @ManyToOne
     @MapsId("artistId")  // FanIdEntity.artistId 매핑
     @JoinColumn(name = "artist_id", nullable = false)
-    private MemberEntity member;
+    private MemberEntity artist;
 
     @ManyToOne
     @MapsId("fanId")  // FanIdEntity.fanId 매핑
     @JoinColumn(name = "fan_id", nullable = false)
     private MemberEntity fan;
 
-    public FanEntity(Fan fan) {
-        this.id = new FanIdEntity(fan.getArtistId(), fan.getFanId());
+    public FanEntity(Member artist, Member fan) {
+        this.id = new FanIdEntity(artist.getId(), fan.getId());
+        this.artist = new MemberEntity(artist);
+        this.fan = new MemberEntity(fan);
     }
 }

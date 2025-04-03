@@ -1,7 +1,6 @@
 package org.musicshare.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.musicshare.domain.member.model.Fan;
 import org.musicshare.domain.member.repository.FanRepository;
 import org.musicshare.global.pricipal.UserAuth;
 import org.springframework.stereotype.Service;
@@ -12,14 +11,19 @@ public class FanService {
 
     private final FanRepository fanRepository;
 
-    public void fanArtist(UserAuth user, Long artistId) {
-        boolean existFan = fanRepository.existFan(artistId, user.getUserId());
+    public boolean getFan(UserAuth user, Long artistId) {
+        return fanRepository.existFan(artistId, user.getUserId());
+    }
 
-        Fan fan = new Fan(artistId, user.getUserId());
-        if(existFan) {
-            fanRepository.delete(fan);
-        } else {
-            fanRepository.save(fan);
+    public void fanArtist(UserAuth user, Long artistId) {
+        if(!user.getUserId().equals(artistId)) {
+            boolean existFan = fanRepository.existFan(artistId, user.getUserId());
+
+            if(existFan) {
+                fanRepository.delete(artistId, user.getUserId());
+            } else {
+                fanRepository.save(artistId, user.getUserId());
+            }
         }
     }
 }
