@@ -1,9 +1,10 @@
 package org.musicshare.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.musicshare.domain.auth.dto.req.NewAccessTokenReq;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -29,9 +31,27 @@ public class AuthController {
 
 
     @PostMapping("/kakao-token")
-    public Response<LoginTokenRes> getKakaoToken(@RequestParam("code")String code, @RequestParam("fcmToken") String fcmToken) {
-        LoginTokenRes loginTokenRes = authService.login(code, fcmToken);
+    public Response<LoginTokenRes> kakaoLogin(@RequestParam String code, @RequestParam String fcmToken) {
+        LoginTokenRes loginTokenRes = authService.kakaoLogin(code, fcmToken);
         return Response.ok(loginTokenRes);
+    }
+
+//    @GetMapping("/login")
+//    public Response<LoginTokenRes> login(@RequestBody String LoginReq , @RequestParam String fcmToken) {
+//        //LoginTokenRes loginTokenRes = authService.login(code, fcmToken);
+//        return Response.ok();
+//    }
+
+//    @GetMapping("/validate/nickname")
+//    public Response<Boolean> validateNickname(@RequestParam @NotBlank String nickname) {
+//        // 닉네임 중복 확인
+//        return Response.ok(authService.checkNickname(nickname));
+//    }
+
+    @GetMapping("/verify/check")
+    public Response<Boolean> verifyCheck(@RequestParam @NotBlank String email, @RequestParam @NotBlank String code) {
+        // 인증 코드 확인
+        return Response.ok(authService.checkVerifyCode(email, code));
     }
 
     @GetMapping("/check")

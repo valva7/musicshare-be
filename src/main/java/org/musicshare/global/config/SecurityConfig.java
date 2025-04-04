@@ -40,7 +40,8 @@ public class SecurityConfig {
         "/main/**",
         "/auth/**",
         "/music/public/**",
-        "/comment/public/**"
+        "/comment/public/**",
+        "/email/signUp/verify",
     };
 
     @Bean

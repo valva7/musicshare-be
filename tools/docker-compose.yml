@@ -1,0 +1,17 @@
+services:
+  redis:
+    image: redis:7.2.5
+    container_name: musicshare-redis
+    ports:
+      - '6379:6379'
+#  mongodb:
+#    image: mongo:6.0.16
+#    container_name: mytv-mongodb
+#    ports:
+#      - 27017:27017
+#    volumes:
+#      - ./mongodb/data:/data
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=local
+#      - MONGO_INITDB_ROOT_PASSWORD=local
+#      - MONGO_INITDB_DATABASE=musicshare

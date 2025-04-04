@@ -78,7 +78,7 @@ public class MusicEntity extends TimeBaseEntity {
         return Music.builder()
             .id(this.id)
             .info(new MusicInfo(this.title, this.theme, this.mood, this.genre, this.tags, this.bpm, this.duration, this.description, this.rating, this.downloadCount, this.likeCount, this.commentCount))
-            .author(new Member(this.author.getId(), new MemberInfo(this.author.getNickname(), this.author.getProfileImageUrl())))
+            .author(new Member(this.author.getId(), new MemberInfo(this.author.getEmail(), this.author.getNickname(), this.author.getProfileImageUrl())))
             .version(this.version)
             .build();
     }

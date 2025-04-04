@@ -19,13 +19,17 @@ import org.musicshare.global.entity.TimeBaseEntity;
 @Setter
 @NoArgsConstructor
 @Table(name = "member", indexes = {
-    @Index(name = "idx_nickname", columnList = "nickname")
+    @Index(name = "idx_nickname", columnList = "nickname"),
+    @Index(name = "idx_email", columnList = "email"),
 })
 public class MemberEntity extends TimeBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false, unique = true)
     private String nickname;
@@ -35,6 +39,7 @@ public class MemberEntity extends TimeBaseEntity {
 
     public MemberEntity(Member member) {
         this.id = member.getId();
+        this.email = member.getInfo().getEmail();
         this.nickname = member.getInfo().getNickname();
         this.profileImageUrl = member.getInfo().getProfileImageUrl();
     }
@@ -42,7 +47,7 @@ public class MemberEntity extends TimeBaseEntity {
     public Member toMember() {
         return Member.builder()
             .id(this.id)
-            .info(new MemberInfo(this.nickname, this.profileImageUrl))
+            .info(new MemberInfo(this.email, this.nickname, this.profileImageUrl))
             .build();
     }
 
