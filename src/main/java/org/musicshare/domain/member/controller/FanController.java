@@ -1,5 +1,13 @@
 package org.musicshare.domain.member.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,27 +16,41 @@ import org.musicshare.global.pricipal.AuthPrincipal;
 import org.musicshare.global.pricipal.UserAuth;
 import org.musicshare.global.response.Response;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Fan", description = "팬 관련 API")
 @Slf4j
 @RestController
 @RequestMapping("/fan")
 @RequiredArgsConstructor
-@Tag(name="Basics", description = "아티스트 팬 관리 API")
 public class FanController {
 
     private final FanService fanService;
 
-    @GetMapping
-    public Response getFan(@AuthPrincipal UserAuth userAuth, @RequestParam Long artistId) {
+    @GetMapping("/{artistId}")
+    @Operation(summary = "팬 여부 확인", description = "특정 아티스트의 팬인지 확인한다.")
+    @Parameters({
+        @Parameter(name = "artistId", description = "회원 ID", in = ParameterIn.PATH, required = true)
+    })
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "팬 여부 조회 성공", content = @Content(schema = @Schema(implementation = Boolean.class)))
+    })
+    public Response<Boolean> getFan(@Parameter(hidden = true) @AuthPrincipal UserAuth userAuth, @PathVariable Long artistId) {
         return Response.ok(fanService.getFan(userAuth, artistId));
     }
 
-    @PostMapping
-    public Response<Void> fanArtist(@AuthPrincipal UserAuth user, @RequestParam Long artistId) {
+    @PostMapping("/{artistId}")
+    @Operation(summary = "팬 등록", description = "특정 아티스트의 팬으로 등록한다.")
+    @Parameters({
+        @Parameter(name = "artistId", description = "회원 ID", in = ParameterIn.PATH, required = true)
+    })
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "팬 등록 성공")
+    })
+    public Response<Void> fanArtist(@Parameter(hidden = true) @AuthPrincipal UserAuth user, @PathVariable Long artistId) {
         fanService.fanArtist(user, artistId);
         return Response.ok(null);
     }

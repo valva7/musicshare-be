@@ -4,6 +4,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.music.dto.req.CreateCommentReq;
@@ -24,7 +25,7 @@ import org.musicshare.domain.music.repository.JpaMusicRepository;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CommentService {
 
     private final JpaMusicRepository jpaMusicRepository;
@@ -57,7 +58,7 @@ public class CommentService {
         jpaCommentRepository.save(commentEntity);
     }
 
-    public List<TopTenMusicCommentRes> getTopTenSelectMusicCommentList(Long musicId) {
+    public List<TopTenMusicCommentRes> getMusicCommentList(Long musicId) {
         return jpaCommentRepository.findCommentsByMusicId(musicId);
     }
 

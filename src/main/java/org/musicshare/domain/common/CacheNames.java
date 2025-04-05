@@ -1,4 +1,4 @@
-package org.musicshare.common;
+package org.musicshare.domain.common;
 
 import java.lang.reflect.Field;
 import static java.lang.reflect.Modifier.isStatic;

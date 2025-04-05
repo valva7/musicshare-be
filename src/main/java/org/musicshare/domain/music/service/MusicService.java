@@ -7,13 +7,14 @@ import java.io.IOException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.musicshare.domain.music.dto.req.MusicUploadReq;
 import org.musicshare.domain.music.dto.res.MusicDetailRes;
 import org.musicshare.domain.music.repository.MusicFileRepository;
 import org.musicshare.domain.music.repository.MusicRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.musicshare.common.utils.FFmpegAudioAnalysis;
+import org.musicshare.domain.music.utils.FFmpegAudioAnalysis;
 import org.musicshare.domain.ai.dto.res.GptRes;
 import org.musicshare.domain.ai.service.OpenAiService;
 import org.musicshare.domain.file.service.S3Uploader;
@@ -44,18 +45,18 @@ public class MusicService {
 
 
     @Transactional
-    public void uploadMusicFile(UserAuth userAuth, MultipartFile file, String title, String description, String genre, String theme, String tags) throws Exception {
+    public void uploadMusicFile(UserAuth userAuth, MusicUploadReq req) throws Exception {
         String uploadUrl = "";
         try {
             Member member = memberRepository.findMemberById(userAuth.getUserId());
             // 음악 분석 및 음악정보 생성
-            MusicInfo musicInfo = analyzeMusic(file, title, description, genre, theme, tags);
+            MusicInfo musicInfo = analyzeMusic(req.file(), req.title(), req.description(), req.genre(), req.theme(), req.tags());
             Music music = musicRepository.saveMusic(musicInfo, member);
 
             // 음악 파일 S3 업로드
-            uploadUrl = uploadMusicFileToS3(file);
+            uploadUrl = uploadMusicFileToS3(req.file());
 
-            musicFileRepository.saveMusicFile(file.getOriginalFilename(), music, uploadUrl);
+            musicFileRepository.saveMusicFile(req.file().getOriginalFilename(), music, uploadUrl);
         } catch (DataIntegrityViolationException | PersistenceException e) {
             // JPA 예외 발생 시 S3에 업로드한 파일 삭제
             handleException(uploadUrl);

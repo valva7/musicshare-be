@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.like.LikeType;
-import org.musicshare.domain.like.dto.req.LikeMusicReq;
 import org.musicshare.domain.like.dto.res.MusicLikedRes;
 import org.musicshare.domain.like.model.Like;
 import org.musicshare.domain.like.model.entity.LikeEntity;
@@ -43,11 +42,11 @@ public class LikeService {
         backoff = @Backoff(delay = 100)
     )
     @Transactional
-    public void likeMusic(UserAuth user,  LikeMusicReq req) {
-        Music music = musicRepository.findMusicById(req.musicId());
+    public void likeMusic(UserAuth user,  Long musicId) {
+        Music music = musicRepository.findMusicById(musicId);
         Member member = memberRepository.findMemberById(user.getUserId());
 
-        Like like = new Like(member, req.musicId(), LikeType.MUSIC.getCode());
+        Like like = new Like(member, musicId, LikeType.MUSIC.getCode());
         // 좋아요 여부 확인
         boolean check = likeRepository.checkLike(like);
         if (check) {

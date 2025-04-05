@@ -1,4 +1,4 @@
-package org.musicshare.common.utils;
+package org.musicshare.domain.music.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

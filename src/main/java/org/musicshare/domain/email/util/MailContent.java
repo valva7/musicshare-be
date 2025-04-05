@@ -1,8 +1,8 @@
 package org.musicshare.domain.email.util;
 
-public class MailTemplate {
+public class MailContent {
 
-    public static String getSignUpVerifyTemplate(String code) {
+    public static String signUpVerify(String code) {
         return """
         <!DOCTYPE html>
         <html lang="ko">

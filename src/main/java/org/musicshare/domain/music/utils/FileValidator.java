@@ -1,4 +1,4 @@
-package org.musicshare.common.utils;
+package org.musicshare.domain.music.utils;
 
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;

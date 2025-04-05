@@ -1,9 +1,10 @@
 package org.musicshare.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.musicshare.domain.member.dto.req.MemberResDto;
+import org.musicshare.domain.member.dto.req.MemberRes;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.member.repository.MemberRepository;
+import org.musicshare.global.pricipal.UserAuth;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,9 +13,9 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberResDto getMember(Long memberId) {
-        Member member = memberRepository.findMemberById(memberId);
-        return new MemberResDto(member);
+    public MemberRes getMember(UserAuth user) {
+        Member member = memberRepository.findMemberById(user.getUserId());
+        return new MemberRes(member);
     }
 
 }

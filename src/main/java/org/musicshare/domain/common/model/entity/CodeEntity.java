@@ -1,13 +1,9 @@
-package org.musicshare.common.model.entity;
+package org.musicshare.domain.common.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -29,16 +25,16 @@ import org.musicshare.global.entity.TimeBaseEntity;
 public class CodeEntity extends TimeBaseEntity {
 
     @EmbeddedId
-    private CodeIdEntity codeId;
+    private CodeIdEntity id;
 
-    @MapsId("groupCode") // 복합키의 groupCode 부분을 외래키로 매핑
+    @MapsId("groupCode")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_code", referencedColumnName = "group_code", insertable = false, updatable = false)
-    private CodeGroupEntity groupCode; // 외래키
+    private CodeGroupEntity groupCode;
 
     private String name;
 
     @Column(nullable = true, length = 255)
-    private String description; // 코드 설명
+    private String description;
 
 }
