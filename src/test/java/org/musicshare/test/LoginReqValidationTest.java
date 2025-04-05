@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.musicshare.domain.music.dto.req.LoginReq;
+import org.musicshare.domain.auth.dto.req.LoginReq;
 
 public class LoginReqValidationTest {
 

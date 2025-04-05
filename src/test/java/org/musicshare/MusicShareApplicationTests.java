@@ -5,7 +5,7 @@ import jakarta.validation.Validator;
 import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
-import org.musicshare.domain.music.dto.req.LoginReq;
+import org.musicshare.domain.auth.dto.req.LoginReq;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest

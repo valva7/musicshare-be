@@ -1,4 +1,4 @@
-package org.musicshare.domain.music.dto.req;
+package org.musicshare.domain.auth.dto.req;
 
 import jakarta.validation.constraints.NotEmpty;
 
