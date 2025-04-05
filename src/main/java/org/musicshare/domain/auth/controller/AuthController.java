@@ -1,9 +1,13 @@
 package org.musicshare.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.musicshare.domain.music.dto.req.KakaoLoginReq;
+import org.musicshare.domain.music.dto.req.LoginReq;
+import org.musicshare.domain.music.dto.req.MemberSignupReq;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,26 +35,30 @@ public class AuthController {
 
 
     @PostMapping("/kakao-token")
-    public Response<LoginTokenRes> kakaoLogin(@RequestParam String code, @RequestParam String fcmToken) {
-        LoginTokenRes loginTokenRes = authService.kakaoLogin(code, fcmToken);
+    public Response<LoginTokenRes> kakaoLogin(@RequestBody @Valid KakaoLoginReq req) {
+        LoginTokenRes loginTokenRes = authService.kakaoLogin(req);
         return Response.ok(loginTokenRes);
     }
 
-//    @GetMapping("/login")
-//    public Response<LoginTokenRes> login(@RequestBody String LoginReq , @RequestParam String fcmToken) {
-//        //LoginTokenRes loginTokenRes = authService.login(code, fcmToken);
-//        return Response.ok();
-//    }
+    @PostMapping("/login")
+    public Response<LoginTokenRes> login(@RequestBody @Valid LoginReq req) {
+        LoginTokenRes loginTokenRes = authService.login(req);
+        return Response.ok(loginTokenRes);
+    }
 
-//    @GetMapping("/validate/nickname")
-//    public Response<Boolean> validateNickname(@RequestParam @NotBlank String nickname) {
-//        // 닉네임 중복 확인
-//        return Response.ok(authService.checkNickname(nickname));
-//    }
+    @PostMapping("/signUp")
+    public Response<Void> signUp(@RequestBody @Valid MemberSignupReq req) {
+        authService.signUp(req);
+        return Response.ok(null);
+    }
+
+    @GetMapping("/validate/nickname")
+    public Response<Boolean> validateNickname(@RequestParam @NotBlank String nickname) {
+        return Response.ok(authService.validateNickname(nickname));
+    }
 
     @GetMapping("/verify/check")
     public Response<Boolean> verifyCheck(@RequestParam @NotBlank String email, @RequestParam @NotBlank String code) {
-        // 인증 코드 확인
         return Response.ok(authService.checkVerifyCode(email, code));
     }
 
@@ -66,7 +74,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public Response<?> refreshAccessToken(@RequestBody NewAccessTokenReq request) {
+    public Response<NewAccessTokenRes> refreshAccessToken(@RequestBody @Valid NewAccessTokenReq request) {
         String refreshToken = request.refreshToken();
 
         if (tokenProvider.validateToken(refreshToken)) {

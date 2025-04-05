@@ -13,4 +13,8 @@ public record Response<T>(Integer code, String message, T value) {
         return new Response<>(error.getCode(), error.getMessage(), null);
     }
 
+    public static <T> Response<T> error(ErrorCode error, String message){
+        return new Response<>(error.getCode(), message, null);
+    }
+
 }

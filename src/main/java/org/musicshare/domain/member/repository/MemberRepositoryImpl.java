@@ -27,4 +27,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         return memberEntity.toMember();
     }
 
+    public Member findMemberByEmail(String email){
+        MemberEntity memberEntity = jpaMemberRepository.findByEmail(email);
+        return memberEntity == null ? null : memberEntity.toMember();
+    }
+
 }

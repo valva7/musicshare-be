@@ -10,4 +10,6 @@ public interface MemberRepository {
     Member findMemberByNickname(String nickname);
 
     Member findMemberById(Long memberId);
+
+    Member findMemberByEmail(String email);
 }

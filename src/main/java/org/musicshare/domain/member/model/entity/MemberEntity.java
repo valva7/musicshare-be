@@ -34,6 +34,9 @@ public class MemberEntity extends TimeBaseEntity {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column(nullable = false)
+    private String password;
+
     private String profileImageUrl;
     private String introduceText;
 
@@ -41,13 +44,14 @@ public class MemberEntity extends TimeBaseEntity {
         this.id = member.getId();
         this.email = member.getInfo().getEmail();
         this.nickname = member.getInfo().getNickname();
+        this.password = member.getInfo().getPassword();
         this.profileImageUrl = member.getInfo().getProfileImageUrl();
     }
 
     public Member toMember() {
         return Member.builder()
             .id(this.id)
-            .info(new MemberInfo(this.email, this.nickname, this.profileImageUrl))
+            .info(new MemberInfo(this.email, this.nickname, this.password, this.profileImageUrl))
             .build();
     }
 
