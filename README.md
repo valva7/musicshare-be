@@ -68,6 +68,9 @@
 - **Storage**: AWS S3
 - **Authentication**: Kakao OAuth, JWT
 - **Notification**: Firebase Cloud Messaging (FCM)
+- **Containerization**: Docker, DockerHub
+- **Orchestration**: Kubernetes
+- **Deployment(추후)**: ArgoCD, GitHub Actions
 - **음악 분석**: ffmpeg, aubio, opencv
 - **AI 분석**: ChatGPT
 ```
