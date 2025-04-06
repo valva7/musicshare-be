@@ -9,11 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Schema(description = "음악 업로드 요청")
 public record MusicUploadReq(
 
-    @Schema(description = "음악 파일", type = "file", required = true)
+    @Schema(description = "음악 파일", type = "file")
     @FileValidate(allowedTypes = {"mp3", "wav"}, fileType = "MF", message = "mp3 또는 wav 파일만 업로드 가능합니다.")
     MultipartFile file,
 
-    @Schema(description = "제목", type = "String", required = true)
+    @Schema(description = "제목", type = "String")
     @NotBlank(message = "제목은 필수입니다.")
     String title,
 
@@ -37,11 +37,11 @@ public record MusicUploadReq(
     @Pattern(regexp = "SP|NT|NM|MV|LV", message = "올바른 테마 코드여야 합니다.")
     String theme,
 
-    @Schema(description = "설명", type = "String", required = true)
+    @Schema(description = "설명", type = "String")
     @NotBlank(message = "설명은 필수입니다.")
     String description,
 
-    @Schema(description = "태그", type = "String", required = true)
+    @Schema(description = "태그", type = "String")
     @NotBlank(message = "태그는 필수입니다.")
     String tags
 

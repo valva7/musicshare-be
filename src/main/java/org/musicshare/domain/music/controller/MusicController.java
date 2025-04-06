@@ -59,7 +59,6 @@ public class MusicController {
             @ApiResponse(responseCode = "200", description = "음악 세부 정보 조회 성공")
         }
     )
-
     public Response<MusicDetailRes> getMusicDetail(@PathVariable Long musicId) {
         return Response.ok(musicService.getMusicDetail(musicId));
     }
