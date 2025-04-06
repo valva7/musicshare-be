@@ -30,12 +30,6 @@ public class GlobalExceptionHandler {
         return Response.error(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(MemberNotFoundException.class)
-    public Response<Void> memberNotFoundException(MemberNotFoundException exception) {
-        log.error(exception.getMessage(), exception);
-        return Response.error(ErrorCode.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(RuntimeException.class)
     public Response<Void> runtimeException(RuntimeException exception) {
         log.error(exception.getMessage(), exception);
@@ -46,6 +40,20 @@ public class GlobalExceptionHandler {
     public Response<Void> mailSendException(MailSendException exception) {
         log.error(exception.getMessage(), exception);
         return Response.error(ErrorCode.INTERNAL_SERVER_ERROR, exception.getMessage());
+    }
+
+
+    // ======================================= 커스텀 ============================================
+    @ExceptionHandler(InvalidJwtException.class)
+    public Response<Void> invalidJwtException(InvalidJwtException exception) {
+        log.error(exception.getMessage(), exception);
+        return Response.error(exception.getErrorCode(), exception.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public Response<Void> memberNotFoundException(MemberNotFoundException exception) {
+        log.error(exception.getMessage(), exception);
+        return Response.error(exception.getErrorCode(), exception.getMessage());
     }
 
 

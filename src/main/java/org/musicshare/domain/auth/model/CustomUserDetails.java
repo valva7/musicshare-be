@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUserDetails implements UserDetails {
 
     private Long userId;
+    private String email;
     private String username;
 
     @Override

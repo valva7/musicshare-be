@@ -3,14 +3,12 @@ package org.musicshare.global.exception;
 import lombok.Getter;
 
 @Getter
-public class MemberNotFoundException extends RuntimeException{
-
+public class InvalidJwtException extends RuntimeException {
     private final ErrorCode errorCode;
     private final String message;
 
-    public MemberNotFoundException(String message) {
-        this.errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+    public InvalidJwtException(String message) {
+        this.errorCode = ErrorCode.UNAUTHORIZED;
         this.message = message;
     }
-
 }
