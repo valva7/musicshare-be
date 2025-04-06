@@ -20,8 +20,7 @@ public record MusicUploadReq(
     @Schema(
         description = "장르 : #GENRE[발라드(BD), 클래식(CS), 댄스(DC), 일렉트로닉(EL), 힙합(HP), R&B(RB), 락(RK)]",
         type = "String",
-        allowableValues = {"BD", "CS", "DC", "EL", "HP", "RB", "RK"},
-        required = true
+        allowableValues = {"BD", "CS", "DC", "EL", "HP", "RB", "RK"}
     )
     @NotBlank(message = "장르는 필수입니다.")
     @Pattern(regexp = "BD|CS|DC|EL|HP|RB|RK", message = "올바른 장르 코드여야 합니다.")
@@ -30,8 +29,7 @@ public record MusicUploadReq(
     @Schema(
         description = "테마 : #THEME[우주(SP), 자연(NT), 일상(NM), 영화(MV), 사랑(LV)]",
         type = "String",
-        allowableValues = {"SP", "NT", "NM", "MV", "LV"},
-        required = true
+        allowableValues = {"SP", "NT", "NM", "MV", "LV"}
     )
     @NotBlank(message = "테마는 필수입니다.")
     @Pattern(regexp = "SP|NT|NM|MV|LV", message = "올바른 테마 코드여야 합니다.")
