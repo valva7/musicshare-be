@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -19,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class S3Uploader {
 
-    private final String MUSIC_UPLOAD_DIR = "music/";
+    private static final String MUSIC_UPLOAD_DIR = "music/";
 
     private final AmazonS3 amazonS3;
     private final String bucket;
@@ -29,7 +28,18 @@ public class S3Uploader {
         this.bucket = bucket;
     }
 
+    /**
+     * 음악 파일 업로드
+     *
+     * @param multipartFile 업로드할 파일
+     * @return 업로드된 파일의 URL
+     * @throws IOException 파일 변환 중 오류 발생 시
+     */
     public String musicFileUpload(MultipartFile multipartFile) throws IOException {
+        if (multipartFile.isEmpty()) {
+            throw new IllegalArgumentException("파일이 비어있습니다");
+        }
+
         // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
         String originalFileName = multipartFile.getOriginalFilename();
 
@@ -44,6 +54,11 @@ public class S3Uploader {
         return uploadFileUrl;
     }
 
+    /**
+     * 음악 파일 삭제
+     *
+     * @param fileName 삭제할 파일의 URL
+     */
     public void deleteFile(String fileName) {
         // URL에서 Directory만 추출
         String[] split = fileName.split(".com");

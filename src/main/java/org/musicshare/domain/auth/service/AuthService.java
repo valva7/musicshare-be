@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.auth.dto.res.LoginTokenRes;
-import org.musicshare.domain.auth.utils.TokenProvider;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.auth.dto.res.KakaoUserInfoRespDto;
 import org.musicshare.domain.member.model.MemberInfo;

@@ -8,6 +8,6 @@ public interface LikeRepository {
 
     boolean checkLike(Like like);
 
-    MusicLikedRes getMusicLiked(UserAuth user, Long musicId);
+    MusicLikedRes findMusicLiked(UserAuth user, Long musicId);
 
 }

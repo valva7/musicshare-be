@@ -1,7 +1,6 @@
 package org.musicshare.global.config;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
 import org.musicshare.domain.member.repository.MemberRepository;
 import org.musicshare.global.pricipal.AuthenticationPrincipalArgumentResolver;
 import org.springframework.beans.factory.annotation.Value;

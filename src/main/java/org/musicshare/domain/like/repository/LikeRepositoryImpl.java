@@ -1,11 +1,8 @@
 package org.musicshare.domain.like.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.like.LikeType;
 import org.musicshare.domain.like.dto.res.MusicLikedRes;
@@ -32,7 +29,7 @@ public class LikeRepositoryImpl implements LikeRepository {
         return jpaLikeRepository.existsById(entity.getId());
     }
 
-    public MusicLikedRes getMusicLiked(UserAuth user, Long musicId) {
+    public MusicLikedRes findMusicLiked(UserAuth user, Long musicId) {
         return queryFactory
             .select(Projections.constructor(MusicLikedRes.class,
                 new CaseBuilder()
@@ -44,7 +41,7 @@ public class LikeRepositoryImpl implements LikeRepository {
             .from(music)
             .leftJoin(like)
             .on(like.id.targetId.eq(music.id)
-                .and(like.id.memberId.eq(user.getUserId()))
+                .and(like.id.memberId.eq(user.userId()))
                 .and(like.id.targetType.eq(LikeType.MUSIC.getCode()))
             )
             .where(music.id.eq(musicId))

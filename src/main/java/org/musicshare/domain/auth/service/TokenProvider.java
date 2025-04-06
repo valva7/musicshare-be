@@ -1,4 +1,4 @@
-package org.musicshare.domain.auth.utils;
+package org.musicshare.domain.auth.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -3,7 +3,6 @@ package org.musicshare.domain.music.service;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.member.model.Member;
@@ -40,7 +39,7 @@ public class CommentService {
     )
     @Transactional
     public void createComment(UserAuth user, CreateCommentReq req) {
-        Member member = memberRepository.findMemberById(user.getUserId());
+        Member member = memberRepository.findMemberById(user.userId());
         Music music = musicRepository.findMusicById(req.musicId());
 
         // 댓글 카운트 증가
@@ -48,7 +47,7 @@ public class CommentService {
         // 평점 반영
         music.getInfo().getRating().average(req.rating(), increaseCommentCount);
         // 음악 정보 업데이트
-        musicRepository.updateMusic(music);
+        musicRepository.update(music);
 
         // TODO: 하나의 음악에 한 사람이 여러 댓글을 작성할 수 있게 할지 고민중..
 

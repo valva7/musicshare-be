@@ -12,17 +12,17 @@ public class FanService {
     private final FanRepository fanRepository;
 
     public boolean getFan(UserAuth user, Long artistId) {
-        return fanRepository.existFan(artistId, user.getUserId());
+        return fanRepository.existFan(artistId, user.userId());
     }
 
     public void fanArtist(UserAuth user, Long artistId) {
-        if(!user.getUserId().equals(artistId)) {
-            boolean existFan = fanRepository.existFan(artistId, user.getUserId());
+        if(!user.userId().equals(artistId)) {
+            boolean existFan = fanRepository.existFan(artistId, user.userId());
 
             if(existFan) {
-                fanRepository.delete(artistId, user.getUserId());
+                fanRepository.delete(artistId, user.userId());
             } else {
-                fanRepository.save(artistId, user.getUserId());
+                fanRepository.save(artistId, user.userId());
             }
         }
     }

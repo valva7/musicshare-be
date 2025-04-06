@@ -3,6 +3,7 @@ package org.musicshare.domain.music.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.bytedeco.opencv.opencv_core.*;
 import org.bytedeco.opencv.global.opencv_imgcodecs;
 import java.util.concurrent.TimeUnit;
@@ -19,11 +20,23 @@ import java.util.regex.Pattern;
 @Slf4j
 public class FFmpegAudioAnalysis {
 
-    private final static int ARRAY_LIMIT = 10;
+    private static final int MAX_FREQUENCY = 22050;
+    private static final int MAX_ARRAY = 10;
+    private static final int MAX_DURATION = 20;
+
+    private FFmpegAudioAnalysis() {
+        throw new UnsupportedOperationException("이 유틸리티 클래스는 인스턴스화할 수 없습니다.");
+    }
 
     public static String analyzeAudio(MultipartFile file) throws Exception {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 비어있습니다");
+        }
+
         // MultipartFile을 임시 파일로 저장
-        File tempFile = File.createTempFile("uploaded_", ".mp3");
+        String fileName = Objects.requireNonNull(file.getOriginalFilename());
+        String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+        File tempFile = File.createTempFile("uploaded_", extension);
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
@@ -103,7 +116,7 @@ public class FFmpegAudioAnalysis {
         // 음악 길이 (초 단위)
         int totalSeconds = convertToSeconds(mp3DurationFormatMinSec);
         // 음악 길이 제한
-        if(totalSeconds > 20) totalSeconds = 20;
+        if(totalSeconds > MAX_DURATION) totalSeconds = MAX_DURATION;
 
         // FFmpeg 실행 → spectrum.png 생성
         String command = "ffmpeg -i " + filePath + " -filter_complex [0:a]showfreqs=s=1920x1080 -t " + totalSeconds + " -update 1 " + pngFile.getAbsolutePath();
@@ -132,8 +145,8 @@ public class FFmpegAudioAnalysis {
 
         int height = image.rows();
         int width = image.cols();
-        int maxFrequency = 22050;  // 최대 주파수
-        double frequencyPerPixel = (double) maxFrequency / height;
+        // 최대 주파수
+        double frequencyPerPixel = (double) MAX_FREQUENCY / height;
 
         List<Double> strongestFreqs = new ArrayList<>();
 
@@ -157,12 +170,12 @@ public class FFmpegAudioAnalysis {
         String arr = strongestFreqs.toString();
         arr = arr.substring(1, arr.length() - 1);
         String[] elements = arr.split(", ");
-        // 200번째 배열까지만 자르기
-        String[] firstLimitElements = Arrays.copyOfRange(elements, 0, ARRAY_LIMIT);
-        // String으로 변환
-        String convertStr = String.join(", ", firstLimitElements);
 
-        return convertStr;
+        // 200번째 배열까지만 자르기
+        String[] firstLimitElements = Arrays.copyOfRange(elements, 0, MAX_ARRAY);
+
+        // String으로 변환
+        return String.join(", ", firstLimitElements);
     }
 
     // FFmpeg 또는 aubio 명령 실행

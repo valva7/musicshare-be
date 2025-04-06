@@ -16,7 +16,7 @@ public class MusicFileRepositoryImpl implements MusicFileRepository {
 
     private final JpaMusicFileRepository jpaMusicFileRepository;
 
-    public void saveMusicFile(String fileName, Music music, String uploadUrl) {
+    public void save(String fileName, Music music, String uploadUrl) {
         MusicFileInfo musicFileInfo = new MusicFileInfo(fileName, null, uploadUrl);
         MusicFile musicFile = new MusicFile(null, music, musicFileInfo);
         MusicFileEntity musicFileEntity = new MusicFileEntity(musicFile);

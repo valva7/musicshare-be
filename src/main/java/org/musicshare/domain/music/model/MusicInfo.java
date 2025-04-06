@@ -40,4 +40,19 @@ public class MusicInfo {
         this.commentCount = new PositiveIntegerCounter(commentCount);
     }
 
+    public MusicInfo(String title, String theme, String mood, String genre, String tags, int bpm, String duration, String description) {
+        this.title = title;
+        this.theme = theme;
+        this.mood = mood;
+        this.genre = genre;
+        this.tags = tags;
+        this.bpm = bpm;
+        this.duration = duration;
+        this.description = description;
+        this.rating = new PositiveDoubleCounter();
+        this.downloadCount = new PositiveIntegerCounter();
+        this.likeCount = new PositiveIntegerCounter();
+        this.commentCount = new PositiveIntegerCounter();
+    }
+
 }

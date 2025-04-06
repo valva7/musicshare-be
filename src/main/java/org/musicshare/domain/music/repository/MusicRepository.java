@@ -10,9 +10,9 @@ public interface MusicRepository {
 
     Music findMusicById(Long id);
 
-    Music saveMusic(MusicInfo musicInfo, Member member);
+    Music save(MusicInfo musicInfo, Member member);
 
-    void updateMusic(Music music);
+    void update(Music music);
 
     List<PopularMusicRes> findTop10ByCurrentMonthOrWeekOrderByLikes(String genre);
 

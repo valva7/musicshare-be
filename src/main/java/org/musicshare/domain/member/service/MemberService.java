@@ -13,8 +13,13 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * 회원 정보 조회
+     * @param user
+     * @return
+     */
     public MemberRes getMember(UserAuth user) {
-        Member member = memberRepository.findMemberById(user.getUserId());
+        Member member = memberRepository.findMemberById(user.userId());
         return new MemberRes(member);
     }
 

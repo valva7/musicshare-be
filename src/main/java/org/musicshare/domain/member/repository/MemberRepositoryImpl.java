@@ -23,7 +23,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     public Member findMemberById(Long memberId){
-        MemberEntity memberEntity = jpaMemberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        MemberEntity memberEntity = jpaMemberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자"));
         return memberEntity.toMember();
     }
 

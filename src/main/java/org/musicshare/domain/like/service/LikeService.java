@@ -36,6 +36,11 @@ public class LikeService {
     private final MemberRepository memberRepository;
     private final FcmPushRepository fcmPushRepository;
 
+    /**
+     * 음악 좋아요
+     * @param user
+     * @param musicId
+     */
     @Retryable(
         value = ObjectOptimisticLockingFailureException.class,
         maxAttempts = 3,
@@ -44,7 +49,7 @@ public class LikeService {
     @Transactional
     public void likeMusic(UserAuth user,  Long musicId) {
         Music music = musicRepository.findMusicById(musicId);
-        Member member = memberRepository.findMemberById(user.getUserId());
+        Member member = memberRepository.findMemberById(user.userId());
 
         Like like = new Like(member, musicId, LikeType.MUSIC.getCode());
         // 좋아요 여부 확인
@@ -60,11 +65,17 @@ public class LikeService {
             fcmPushService.sendLikeMessage(member, music.getAuthor());
         }
 
-        musicRepository.updateMusic(music);
+        musicRepository.update(music);
     }
 
+    /**
+     * 음악 좋아요 여부 조회
+     * @param user
+     * @param musicId
+     * @return
+     */
     public MusicLikedRes getMusicLiked(UserAuth user, Long musicId) {
-        return likeRepository.getMusicLiked(user, musicId);
+        return likeRepository.findMusicLiked(user, musicId);
     }
 
     // ========================================= Inner Method =========================================

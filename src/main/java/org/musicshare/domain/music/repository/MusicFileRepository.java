@@ -4,6 +4,6 @@ import org.musicshare.domain.music.model.Music;
 
 public interface MusicFileRepository {
 
-    void saveMusicFile(String fileName, Music music, String uploadUrl);
+    void save(String fileName, Music music, String uploadUrl);
 
 }

@@ -1,15 +1,20 @@
 package org.musicshare.domain.music.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import org.musicshare.global.annotation.FileValidate;
 import org.springframework.web.multipart.MultipartFile;
 
 @Schema(description = "음악 업로드 요청")
 public record MusicUploadReq(
 
-    @Schema(description = "음악 파일", required = true)
+    @Schema(description = "음악 파일", type = "file", required = true)
+    @FileValidate(allowedTypes = {"mp3", "wav"}, fileType = "MF", message = "mp3 또는 wav 파일만 업로드 가능합니다.")
     MultipartFile file,
 
     @Schema(description = "제목", type = "String", required = true)
+    @NotBlank(message = "제목은 필수입니다.")
     String title,
 
     @Schema(
@@ -18,6 +23,8 @@ public record MusicUploadReq(
         allowableValues = {"BD", "CS", "DC", "EL", "HP", "RB", "RK"},
         required = true
     )
+    @NotBlank(message = "장르는 필수입니다.")
+    @Pattern(regexp = "BD|CS|DC|EL|HP|RB|RK", message = "올바른 장르 코드여야 합니다.")
     String genre,
 
     @Schema(
@@ -26,12 +33,16 @@ public record MusicUploadReq(
         allowableValues = {"SP", "NT", "NM", "MV", "LV"},
         required = true
     )
+    @NotBlank(message = "테마는 필수입니다.")
+    @Pattern(regexp = "SP|NT|NM|MV|LV", message = "올바른 테마 코드여야 합니다.")
     String theme,
 
     @Schema(description = "설명", type = "String", required = true)
+    @NotBlank(message = "설명은 필수입니다.")
     String description,
 
     @Schema(description = "태그", type = "String", required = true)
+    @NotBlank(message = "태그는 필수입니다.")
     String tags
 
 ) {}

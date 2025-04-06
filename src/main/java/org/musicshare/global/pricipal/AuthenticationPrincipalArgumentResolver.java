@@ -32,7 +32,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
             Member member = memberRepository.findMemberById(userDetails.getUserId());
             // 현재 로그인한 사용자 정보를 반환
-            return new UserAuth(member.getId(), member.getInfo().getNickname()); // 예시로 사용자 정보를 객체로 반환
+            return new UserAuth(member.getId(), member.getInfo().getNickname());
         }
 
         return null;

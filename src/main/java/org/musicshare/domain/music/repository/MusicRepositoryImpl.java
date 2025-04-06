@@ -38,7 +38,7 @@ public class MusicRepositoryImpl implements MusicRepository{
         return music.toMusic();
     }
 
-    public Music saveMusic(MusicInfo musicInfo, Member member) {
+    public Music save(MusicInfo musicInfo, Member member) {
         Music music = new Music(null, musicInfo, member);
         MusicEntity musicEntity = new MusicEntity(music);
 
@@ -49,7 +49,7 @@ public class MusicRepositoryImpl implements MusicRepository{
         return music;
     }
 
-    public void updateMusic(Music music) {
+    public void update(Music music) {
         MusicEntity musicEntity = new MusicEntity(music);
 
         entityManager.merge(musicEntity);

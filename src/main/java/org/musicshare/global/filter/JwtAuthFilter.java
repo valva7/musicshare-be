@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.musicshare.domain.auth.utils.TokenProvider;
+import org.musicshare.domain.auth.service.TokenProvider;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.member.repository.MemberRepository;
 import org.musicshare.domain.auth.model.CustomUserDetails;
@@ -22,8 +22,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService customUserDetailsService;
-    private final MemberRepository repository;
     private final TokenProvider tokenProvider;
+
+    private final MemberRepository repository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

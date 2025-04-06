@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.musicshare.domain.auth.utils.TokenProvider;
+import org.musicshare.domain.auth.service.TokenProvider;
 import org.musicshare.domain.member.repository.MemberRepository;
 import org.musicshare.domain.auth.service.CustomUserDetailsService;
 import org.musicshare.global.filter.JwtAuthFilter;
@@ -26,10 +26,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;  // CustomUserDetailsService 추가
-
     private final MemberRepository repository;
 
+    private final CustomUserDetailsService customUserDetailsService;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final TokenProvider tokenProvider;
@@ -61,7 +60,7 @@ public class SecurityConfig {
             .anyRequest().authenticated()); // 나머지 경로는 인증 필요
 
         // JWT 인증 필터 추가 (requestMatchers로 설정한 경로 외에서 동작하도록)
-        http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, repository, tokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthFilter(customUserDetailsService, tokenProvider, repository), UsernamePasswordAuthenticationFilter.class);
 
         // 예외 처리
         http.exceptionHandling(handling -> handling
