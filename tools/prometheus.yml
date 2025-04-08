@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'musicshare-platform'
+    static_configs:
+      - targets: ['192.168.219.114:8080'] # 본인의 로컬 내부 IP로 변경
+    metrics_path: '/actuator/prometheus'
