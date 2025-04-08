@@ -1,17 +1,77 @@
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"                  # 호스트와 컨테이너 포트 매핑
+    environment:
+      MYSQL_ROOT_PASSWORD: qwe1212   # 루트 계정 비밀번호
+      MYSQL_DATABASE: musicshare     # 기본 생성할 데이터베이스 이름
+      MYSQL_USER: music              # 추가 사용자 계정
+      MYSQL_PASSWORD: qwe1212        # 추가 사용자 비밀번호
+    volumes:
+      - mysql_data:/var/lib/mysql    # 데이터 디렉터리 볼륨 매핑
+
   redis:
     image: redis:7.2.5
-    container_name: musicshare-redis
+    container_name: redis
     ports:
       - '6379:6379'
-#  mongodb:
-#    image: mongo:6.0.16
-#    container_name: mytv-mongodb
-#    ports:
-#      - 27017:27017
-#    volumes:
-#      - ./mongodb/data:/data
-#    environment:
-#      - MONGO_INITDB_ROOT_USERNAME=local
-#      - MONGO_INITDB_ROOT_PASSWORD=local
-#      - MONGO_INITDB_DATABASE=musicshare
+
+  #  mongodb:
+  #    image: mongo:6.0.16
+  #    container_name: mongodb
+  #    ports:
+  #      - 27017:27017
+  #    volumes:
+  #      - ./mongodb/data:/data
+  #    environment:
+  #      - MONGO_INITDB_ROOT_USERNAME=local
+  #      - MONGO_INITDB_ROOT_PASSWORD=local
+  #      - MONGO_INITDB_DATABASE=musicshare
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.1
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092        # 바인딩 주소 명확히 설정
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:9.4.7
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/volume:/var/lib/grafana
+    restart: always
+
+
+volumes:
+  mysql_data:
