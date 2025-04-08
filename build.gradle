@@ -43,6 +43,10 @@ dependencies {
     implementation group: 'org.bytedeco', name: 'opencv-platform', version: '4.7.0-1.5.9'
     implementation 'org.bytedeco:javacv:1.5.9'
 
+    // Prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -57,6 +61,9 @@ dependencies {
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Kafka
+    implementation 'org.springframework.kafka:spring-kafka'
 
     // lombok
     implementation 'org.projectlombok:lombok'
