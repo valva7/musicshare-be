@@ -32,7 +32,7 @@ services:
   #      - MONGO_INITDB_DATABASE=musicshare
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.2.1
+    image: confluentinc/cp-kafka:7.2.1
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -41,7 +41,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: confluentinc/cp-kafka:7.2.1
+    image: confluentinc/cp-kafka:7.5.0  # Zookeeper 없는 Kafka 지원 버전
     container_name: kafka
     ports:
       - "9092:9092"
@@ -54,6 +54,23 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092        # 바인딩 주소 명확히 설정
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+#  kafka:
+#    image: confluentinc/cp-kafka:7.5.0  # Zookeeper 없는 Kafka 지원 버전
+#    container_name: kafka
+#    ports:
+#      - "9092:9092"
+#      - "9101:9101"
+#    environment:
+#      KAFKA_NODE_ID: 1
+#      KAFKA_PROCESS_ROLES: broker,controller
+#      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+#      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+#      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+#      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
   prometheus:
     image: prom/prometheus:latest

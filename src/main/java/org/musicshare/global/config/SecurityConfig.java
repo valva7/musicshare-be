@@ -44,6 +44,8 @@ public class SecurityConfig {
         "/comment/public/**",
         "/email/signUp/verify",
         "/common/**",
+        "/actuator/prometheus", // 인증 추가 예정
+        "/actuator/**", // 인증 추가 예정
     };
 
     @Bean
