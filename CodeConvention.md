@@ -1,5 +1,21 @@
 # 📘 코드 컨벤션 (MD)
 
+## 📁 패키지 구조 예시 (도메인 + 계층 기반)
+```
+com.projectname
+├── global              # 공통 설정, 예외, 유틸 등
+│   ├── config
+│   ├── exception
+│   └── util
+├── domain
+│   └── member                # 도메인 이름
+│       ├── controller
+│       ├── service
+│       ├── repository
+│       ├── dto
+│       └── domain          # Entity, VO 등
+```
+
 ## 1. 클래스/파일 구조
 ```java
 // 순서대로 선언
@@ -182,10 +198,11 @@ public class MemberCreateRequest {
 List<String> names = users.stream()
     .map(User::getName)
     .collect(Collectors.toList());
+
 // ✅ 일반 for문 예시
 for (User user : users) {
     log.info(user.getName());
-    }
+}
 ```
 - 메서드 간은 `한 줄 띄우기`
 - `if`, `for`, `while` 등은 항상 `{}` 사용
@@ -224,7 +241,7 @@ public class GlobalExceptionHandler {
 @Service
 public class MusicService {
     public void register(User user) {
-        log.info("사용자 등록 완료: {}", user.getId());
+        log.info("음악 등록 완료: {}", user.getId());
     }
 
     public void handleInvalidRequest(String url) {
