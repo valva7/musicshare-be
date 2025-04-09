@@ -2,12 +2,10 @@ package org.musicshare.domain.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,25 +29,31 @@ public class FanController {
     private final FanService fanService;
 
     @GetMapping("/{artistId}")
-    @Operation(summary = "팬 여부 확인", description = "특정 아티스트의 팬인지 확인한다.")
-    @Parameters({
-        @Parameter(name = "artistId", description = "회원 ID", in = ParameterIn.PATH, required = true)
-    })
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "팬 여부 조회 성공", content = @Content(schema = @Schema(implementation = Boolean.class)))
-    })
+    @Operation(
+        summary = "팬 여부 확인",
+        description = "특정 아티스트의 팬인지 확인한다.",
+        parameters = {
+            @Parameter(name = "artistId", description = "회원 ID", in = ParameterIn.PATH, required = true)
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "팬 여부 조회 성공", content = @Content(schema = @Schema(implementation = Boolean.class)))
+        }
+    )
     public Response<Boolean> getFan(@Parameter(hidden = true) @AuthPrincipal UserAuth userAuth, @PathVariable Long artistId) {
         return Response.ok(fanService.getFan(userAuth, artistId));
     }
 
     @PostMapping("/{artistId}")
-    @Operation(summary = "팬 등록", description = "특정 아티스트의 팬으로 등록한다.")
-    @Parameters({
-        @Parameter(name = "artistId", description = "회원 ID", in = ParameterIn.PATH, required = true)
-    })
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "팬 등록 성공")
-    })
+    @Operation(
+        summary = "팬 등록",
+        description = "특정 아티스트의 팬으로 등록한다.",
+        parameters = {
+            @Parameter(name = "artistId", description = "회원 ID", in = ParameterIn.PATH, required = true)
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "팬 등록 성공")
+        }
+    )
     public Response<Void> fanArtist(@Parameter(hidden = true) @AuthPrincipal UserAuth user, @PathVariable Long artistId) {
         fanService.fanArtist(user, artistId);
         return Response.ok(null);
