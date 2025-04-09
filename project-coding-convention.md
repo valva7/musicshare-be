@@ -65,19 +65,36 @@ public class MyService {
 ### Controller 클래스
 - `@Tag`, `@RequestMapping`, `@RestController`, `@RequiredArgsConstructor`
 - Controller: HTTP 액션 + 리소스명 중심 (ex. `getUser`, `createUser`, `updateUser`)
+- Swagger는 Operation으로 설명
 ```java
 @Tag(name = "Music", description = "음악 관련 API")
 @RequestMapping("/music/public")
 @RestController
 @RequiredArgsConstructor
 public class MusicController {
-    private final MusicService musicService;
 
-    @GetMapping("/{id}")
-    public Response<MusicRes> getMusic(@PathVariable Long id) {
-        return Response.ok(musicService.getMusic(id));
-    }
-}
+  private final MusicService musicService;
+
+  @GetMapping("/hot/current")
+  @Operation(
+          summary = "Top 10 음악 조회",
+          description = "메인화면의 Top 10 음악을 조회한다.",
+          parameters = {
+                  @Parameter(
+                          name = "genre",
+                          description = "장르 : #GENRE[발라드(BD), 클래식(CS), 댄스(DC), 일렉트로닉(EL), 힙합(HP), R&B(RB), 락(RK)]",
+                          schema = @Schema(allowableValues = {"BD", "CS", "DC", "EL", "HP", "RB", "RK"}, type = "String", nullable = true),
+                          in = ParameterIn.QUERY
+                  )
+          },
+          responses = {
+                  @ApiResponse(responseCode = "200", description = "Top 10 음악 조회 성공", content = @Content(schema = @Schema(implementation = PopularMusicRes[].class))
+                  )
+          }
+  )
+  public Response<List<PopularMusicRes>> getTop10ByCurrentMonthOrWeekOrderByLikes(@RequestParam(required = false) String genre) {
+    return Response.ok(musicService.getTop10ByCurrentMonthOrWeekOrderByLikes(genre));
+  }
 ```
 
 ### Service
@@ -143,7 +160,6 @@ public class MusicEntity {
 public class Music {
     private Long id;
     private String name;
-
 }
 ```
 
@@ -159,7 +175,7 @@ public class Music {
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberCreateRequest {
+public class MemberCreateReq {
     @NotBlank
     private String username;
 
@@ -173,7 +189,7 @@ public class MemberCreateRequest {
 ## 3. 네이밍 규칙
 | 항목 | 규칙 | 예시                                  |
 |------|------|-------------------------------------|
-| 클래스 | UpperCamelCase | MemberController, MemberServiceImpl |
+| 클래스 | UpperCamelCase | MemberController, MemberService |
 | 변수 | lowerCamelCase | memberId, createdAt                 |
 | 상수 | UPPER_SNAKE_CASE | MAX_PAGE_SIZE                       |
 | 복수형 변수 | 의미 있는 복수형 | memberList, memberDtos              |
