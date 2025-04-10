@@ -27,18 +27,24 @@ docker push {hub id}/{repo name}:0.0
 - ./gradlew clean build
 
 # 2. k8s 커맨드
-POD Deploy
+  POD Deploy
 - kubectl apply -f app.yaml
+
   Namespace list
 - kubectl get namespace
+
   All resource info
 - kubectl get all
+
   All service info
 - kubectl get service
+
   POD info
 - kubectl get pod mysql-7f97b96ff8-rhvvx
+
   POD log
 - kubectl logs pod/auth-service-9b49dc9d7-9vj59
+
   POD delete
 - kubectl delete pod auth-service-9b49dc9d7-9vj59
 
@@ -50,16 +56,20 @@ minikube service 터널
 ## Docker Image 관리
 - https://hub.dokcer.com (docker hub 사이트)
 
-docker image create after
+  docker image create after
 - docker buildx build --platform linux/arm64 --load -t devkimgleam/auth-service:0.0 .
+
   image list
 - docker images
+
   image run
 - docker run devKimgleam/auth-service: 0.0
+
   docker image push
 - docker push devkimgleam/auth-service:0.0
+
   image delete
-- docker rmi  devkimgleam/auth-service:0.0
+- docker rmi devkimgleam/auth-service:0.0
 
 ## 접속 방법 및 정보
 ### 모니터링
