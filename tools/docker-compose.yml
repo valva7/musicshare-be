@@ -31,22 +31,22 @@ services:
   #      - MONGO_INITDB_ROOT_PASSWORD=local
   #      - MONGO_INITDB_DATABASE=musicshare
 
-  zookeeper:
+  zookeeper-1:
     image: confluentinc/cp-zookeeper:7.2.1
-    container_name: zookeeper
+    container_name: zookeeper-1
     ports:
       - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-  kafka:
+  kafka-1:
     image: confluentinc/cp-kafka:7.2.1
-    container_name: kafka
+    container_name: kafka-1
     ports:
       - "9092:9092"
     depends_on:
-      - zookeeper
+      - zookeeper-1
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -54,6 +54,33 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092        # 바인딩 주소 명확히 설정
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka-1:19092'
+      SCHEMA_REGISTRY_HOST_NAME: 'schema-registry'
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8085'
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: 'INFO'
+    ports:
+      - 8085:8085
+    depends_on:
+      - kafka-1
+    networks:
+      default_bridge:
+        ipv4_address: 172.26.0.13
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka-1
+    ports:
+      - 8081:8080
+    environment:
+      - DYNAMIC_CONFIG_ENABLED=true
+      - KAFKA_CLUSTERS_0_NAME=Fast-Ecommerce-Kafka
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:19092
 
 #  kafka:
 #    image: confluentinc/cp-kafka:7.5.0  # Zookeeper 없는 Kafka 지원 버전
