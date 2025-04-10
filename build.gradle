@@ -1,7 +1,11 @@
+import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.3'
     id 'io.spring.dependency-management' version '1.1.7'
+    // AVRO
+    id "com.github.davidmc24.gradle.plugin.avro" version "1.9.1"
 }
 
 group = 'org.musicshare'
@@ -17,6 +21,9 @@ repositories {
     mavenCentral()
     maven {
         url "https://repo.byteme.org/bytecode"
+    }
+    maven {
+        url = uri("https://packages.confluent.io/maven")
     }
 }
 
@@ -63,7 +70,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // Kafka
-    implementation 'org.springframework.kafka:spring-kafka'
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.apache.avro:avro:1.11.3")
+    implementation("io.confluent:kafka-avro-serializer:7.0.1")
 
     // lombok
     implementation 'org.projectlombok:lombok'
@@ -105,6 +114,15 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+afterEvaluate {
+    tasks.withType(GenerateAvroJavaTask).configureEach {
+        fieldVisibility = "PRIVATE"
+        createSetters = false
+        source("src/main/java/org/musicshare/global/avro")
+        outputDir = file("build/generated-sources")
+    }
 }
 
 tasks.named('test') {

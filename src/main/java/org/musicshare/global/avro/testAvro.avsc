@@ -1,0 +1,10 @@
+{
+  "namespace": "org.musicshare.domain.music",
+  "type": "record",
+  "name": "RTestAvro",
+  "fields": [
+    { "name": "id", "type": "long" },
+    { "name": "name", "type": "string" },
+    { "name": "genre", "type": ["null", "string"], "default": null }
+  ]
+}
