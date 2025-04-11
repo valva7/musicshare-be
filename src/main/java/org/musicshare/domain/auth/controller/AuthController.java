@@ -23,7 +23,7 @@ import org.musicshare.domain.auth.dto.res.NewAccessTokenRes;
 import org.musicshare.domain.auth.service.AuthService;
 import org.musicshare.domain.auth.service.TokenProvider;
 import org.musicshare.global.exception.ErrorCode;
-import org.musicshare.global.response.Response;
+import org.musicshare.common.response.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

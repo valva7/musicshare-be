@@ -2,7 +2,6 @@ package org.musicshare.domain.auth.service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.auth.dto.res.LoginTokenRes;
 import org.musicshare.domain.member.model.Member;

@@ -1,7 +1,6 @@
 package org.musicshare.domain.common.service;
 
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.common.dto.res.CommonCodeRes;
 import org.musicshare.domain.common.repository.CodeRepository;
@@ -9,10 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CommonService {
 
     private final CodeRepository codeRepository;
+
+    public CommonService(CodeRepository codeRepository) {
+        this.codeRepository = codeRepository;
+    }
 
     /**
      * 공통코드 조회

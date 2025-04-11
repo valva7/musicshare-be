@@ -1,4 +1,4 @@
-package org.musicshare.global.response;
+package org.musicshare.common.response;
 
 
 import org.musicshare.global.exception.ErrorCode;

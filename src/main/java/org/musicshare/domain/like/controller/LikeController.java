@@ -11,7 +11,7 @@ import org.musicshare.domain.like.dto.res.MusicLikedRes;
 import org.musicshare.domain.like.service.LikeService;
 import org.musicshare.global.pricipal.AuthPrincipal;
 import org.musicshare.global.pricipal.UserAuth;
-import org.musicshare.global.response.Response;
+import org.musicshare.common.response.Response;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

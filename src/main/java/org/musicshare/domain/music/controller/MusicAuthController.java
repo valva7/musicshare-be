@@ -10,7 +10,7 @@ import org.musicshare.domain.music.dto.req.MusicUploadReq;
 import org.musicshare.domain.music.service.MusicService;
 import org.musicshare.global.pricipal.AuthPrincipal;
 import org.musicshare.global.pricipal.UserAuth;
-import org.musicshare.global.response.Response;
+import org.musicshare.common.response.Response;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;

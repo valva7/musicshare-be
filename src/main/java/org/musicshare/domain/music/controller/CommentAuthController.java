@@ -9,7 +9,7 @@ import org.musicshare.domain.music.dto.req.CreateCommentReq;
 import org.musicshare.domain.music.service.CommentService;
 import org.musicshare.global.pricipal.AuthPrincipal;
 import org.musicshare.global.pricipal.UserAuth;
-import org.musicshare.global.response.Response;
+import org.musicshare.common.response.Response;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

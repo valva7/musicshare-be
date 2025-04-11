@@ -3,21 +3,29 @@ package org.musicshare.domain.common.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.common.dto.res.CommonCodeRes;
 import org.musicshare.domain.common.model.entity.QCodeEntity;
 import org.musicshare.domain.common.model.entity.QCodeGroupEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 public class CodeRepositoryImpl implements CodeRepository {
-
-    private final JPAQueryFactory queryFactory;
 
     private static final QCodeEntity code = QCodeEntity.codeEntity;
     private static final QCodeGroupEntity codeGroup = QCodeGroupEntity.codeGroupEntity;
 
+    private final JPAQueryFactory queryFactory;
+
+    public CodeRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
+
+    /**
+     * 공통코드 조회
+     *
+     * @param groupCode 공통코드그룹
+     * @return 공통코드 리스트
+     */
     public List<CommonCodeRes> findCommonCodeList(String groupCode) {
         return queryFactory
             .select(

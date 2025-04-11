@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.musicshare.domain.music.dto.res.PopularMusicRes;
 import org.musicshare.domain.music.service.MusicService;
-import org.musicshare.global.response.Response;
+import org.musicshare.common.response.Response;
 
 @Tag(name = "Music", description = "음악 관련 API")
 @RequestMapping("/music/public")

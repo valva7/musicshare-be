@@ -7,10 +7,13 @@ import org.musicshare.domain.member.model.entity.MemberEntity;
 import org.musicshare.global.exception.MemberNotFoundException;
 
 @Repository
-@RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
 
     private final JpaMemberRepository jpaMemberRepository;
+
+    public MemberRepositoryImpl(JpaMemberRepository jpaMemberRepository) {
+        this.jpaMemberRepository = jpaMemberRepository;
+    }
 
     public MemberEntity saveMember(Member member){
         MemberEntity memberEntity = new MemberEntity(member);
