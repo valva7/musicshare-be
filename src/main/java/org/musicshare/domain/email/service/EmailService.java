@@ -6,7 +6,6 @@ import org.springframework.mail.MailException;
 import jakarta.mail.internet.MimeMessage;
 import java.time.Duration;
 import java.util.Random;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.email.MailTitle;
 import org.musicshare.domain.email.util.MailContent;
@@ -19,14 +18,24 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class EmailService {
+
+    private final StringRedisTemplate redisTemplate;
 
     private final JavaMailSender javaMailSender;
     private final JpaMemberRepository jpaMemberRepository;
 
-    private final StringRedisTemplate redisTemplate;
+    public EmailService(StringRedisTemplate redisTemplate, JavaMailSender javaMailSender, JpaMemberRepository jpaMemberRepository) {
+        this.redisTemplate = redisTemplate;
+        this.javaMailSender = javaMailSender;
+        this.jpaMemberRepository = jpaMemberRepository;
+    }
 
+
+    /**
+     * 회원가입 이메일 인증 코드 전송
+     * @param email
+     */
     public void sendSignUpVerifyCode(String email) {
         // 가입 이메일 존재 여부 확인
         boolean exist = jpaMemberRepository.existsByEmail(email);
@@ -40,6 +49,7 @@ public class EmailService {
         sendEmail(email, title, mailTemplate);
     }
 
+    // ========================================= Inner Method =========================================
     private void sendEmail(String receiver, String title, String signUpVerifyTemplate) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {

@@ -3,7 +3,6 @@ package org.musicshare.domain.like.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.like.LikeType;
 import org.musicshare.domain.like.dto.res.MusicLikedRes;
 import org.musicshare.domain.like.model.Like;
@@ -14,15 +13,19 @@ import org.musicshare.global.pricipal.UserAuth;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 public class LikeRepositoryImpl implements LikeRepository {
+
+    QLikeEntity like = QLikeEntity.likeEntity;
+    QMusicEntity music = QMusicEntity.musicEntity;
 
     private final JPAQueryFactory queryFactory;
 
     private final JpaLikeRepository jpaLikeRepository;
 
-    QLikeEntity like = QLikeEntity.likeEntity;
-    QMusicEntity music = QMusicEntity.musicEntity;
+    public LikeRepositoryImpl(JPAQueryFactory queryFactory, JpaLikeRepository jpaLikeRepository) {
+        this.queryFactory = queryFactory;
+        this.jpaLikeRepository = jpaLikeRepository;
+    }
 
     public boolean checkLike(Like like) {
         LikeEntity entity = new LikeEntity(like);

@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenProvider {
 
-    private final SecretKey key;
     private static final long TOKEN_VALID_TIME = 1000L * 60 * 60; // 1시간
     private static final long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 1440; // 1 day
 
+    private final SecretKey key;
     private final JpaMemberRepository jpaMemberRepository;
 
     public TokenProvider(@Value("${secret-key}") String secretKey, JpaMemberRepository jpaMemberRepository) {
@@ -31,7 +31,11 @@ public class TokenProvider {
         this.jpaMemberRepository = jpaMemberRepository;
     }
 
-    // 최초 액세스 토큰 생성
+    /**
+     * 액세스 토큰 생성
+     * @param member
+     * @return
+     */
     public String createAccessToken(Member member) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + TOKEN_VALID_TIME);
@@ -50,7 +54,11 @@ public class TokenProvider {
                 .compact();
     }
 
-    // 리프레시 토큰을 통해 새로운 액세스 토큰 생성
+    /**
+     * 액세스 토큰 재발급
+     * @param refreshToken
+     * @return
+     */
     public String createNewAccessToken(String refreshToken) {
         Long userId = getUserId(refreshToken);
         MemberEntity memberEntity = jpaMemberRepository.findById(userId)
@@ -58,7 +66,11 @@ public class TokenProvider {
         return createAccessToken(memberEntity.toMember());
     }
 
-    // 리프레시 토큰 생성
+    /**
+     * 리프레시 토큰 생성
+     * @param member
+     * @return
+     */
     public String createRefreshToken(Member member) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
@@ -75,6 +87,11 @@ public class TokenProvider {
             .compact();
     }
 
+    /**
+     * 사용자 ID 추출
+     * @param member
+     * @return
+     */
     public Long getUserId(String token) {
         long userId;
         try {
@@ -95,7 +112,11 @@ public class TokenProvider {
         return userId;
     }
 
-    // 🔹 JWT 검증 (서명, 만료시간 등 체크)
+    /**
+     * JWT 검증
+     * @param token
+     * @return
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser()

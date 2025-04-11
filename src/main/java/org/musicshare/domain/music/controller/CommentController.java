@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.music.dto.res.TopTenMusicCommentRes;
 import org.musicshare.global.response.Response;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +20,13 @@ import org.musicshare.domain.music.service.CommentService;
 @Tag(name = "Comment", description = "댓글 관련 API")
 @RequestMapping("/comment/public")
 @RestController
-@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @GetMapping("/{musicId}")
     @Operation(

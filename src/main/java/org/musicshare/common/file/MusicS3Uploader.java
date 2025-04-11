@@ -1,4 +1,4 @@
-package org.musicshare.domain.file.service;
+package org.musicshare.common.file;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -11,19 +11,19 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
-@Service
-public class S3Uploader {
+@Component("Music3SUploader")
+public class MusicS3Uploader implements S3Uploader{
 
     private static final String MUSIC_UPLOAD_DIR = "music/";
 
     private final AmazonS3 amazonS3;
     private final String bucket;
 
-    public S3Uploader(AmazonS3 amazonS3, @Value("${cloud.aws.s3.bucket}") String bucket) {
+    public MusicS3Uploader(AmazonS3 amazonS3, @Value("${cloud.aws.s3.bucket}") String bucket) {
         this.amazonS3 = amazonS3;
         this.bucket = bucket;
     }
@@ -35,7 +35,7 @@ public class S3Uploader {
      * @return 업로드된 파일의 URL
      * @throws IOException 파일 변환 중 오류 발생 시
      */
-    public String musicFileUpload(MultipartFile multipartFile) throws IOException {
+    public String fileUpload(MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty()) {
             throw new IllegalArgumentException("파일이 비어있습니다");
         }
@@ -54,12 +54,14 @@ public class S3Uploader {
         return uploadFileUrl;
     }
 
+
     /**
      * 음악 파일 삭제
      *
      * @param fileName 삭제할 파일의 URL
      */
-    public void deleteFile(String fileName) {
+    @Override
+    public void fileDelete(String fileName) {
         // URL에서 Directory만 추출
         String[] split = fileName.split(".com");
         // URL 디코딩을 통해 원래의 파일 이름을 가져옴

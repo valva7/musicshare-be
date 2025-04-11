@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.music.dto.req.MusicUploadReq;
 import org.musicshare.domain.music.service.MusicService;
 import org.musicshare.global.pricipal.AuthPrincipal;
@@ -23,10 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/music/auth")
 @Validated
 @RestController
-@RequiredArgsConstructor
 public class MusicAuthController {
 
     private final MusicService musicService;
+
+    public MusicAuthController(MusicService musicService) {
+        this.musicService = musicService;
+    }
 
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(

@@ -18,10 +18,17 @@ import org.springframework.data.redis.serializer.*;
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
-    @Value("${spring.data.redis.host}")
-    private String host;
-    @Value("${spring.data.redis.port}")
-    private int port;
+
+    private final String host;
+    private final int port;
+
+    public RedisConfig(
+        @Value("${spring.data.redis.host}") String host,
+        @Value("${spring.data.redis.port}") int port
+    ) {
+        this.host = host;
+        this.port = port;
+    }
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -43,14 +50,12 @@ public class RedisConfig {
             .build();
     }
 
-
     private RedisCacheConfiguration ttl5mCacheConfiguration() {
         return RedisCacheConfiguration
             .defaultCacheConfig()
             .entryTtl(Duration.ofMinutes(5L))
             .disableCachingNullValues();
     }
-
 
     private RedisCacheConfiguration defaultCacheConfiguration() {
         return RedisCacheConfiguration
@@ -76,14 +81,13 @@ public class RedisConfig {
 
     @Bean
     RedisTemplate<String, Long> longRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        final RedisTemplate<String,Long> redisTemplate = new RedisTemplate();
+        final RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setHashValueSerializer(new GenericToStringSerializer(Long.class));
+        redisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Long.class));
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericToStringSerializer(Long.class));
+        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
-
 }

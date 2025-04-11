@@ -2,7 +2,6 @@ package org.musicshare.domain.like.service;
 
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.like.LikeType;
 import org.musicshare.domain.like.dto.res.MusicLikedRes;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class LikeService {
 
     private final FcmPushService fcmPushService;
@@ -35,6 +33,15 @@ public class LikeService {
     private final MusicRepository musicRepository;
     private final MemberRepository memberRepository;
     private final FcmPushRepository fcmPushRepository;
+
+    public LikeService(FcmPushService fcmPushService, JpaLikeRepository jpaLikeRepository, LikeRepository likeRepository, MusicRepository musicRepository, MemberRepository memberRepository, FcmPushRepository fcmPushRepository) {
+        this.fcmPushService = fcmPushService;
+        this.jpaLikeRepository = jpaLikeRepository;
+        this.likeRepository = likeRepository;
+        this.musicRepository = musicRepository;
+        this.memberRepository = memberRepository;
+        this.fcmPushRepository = fcmPushRepository;
+    }
 
     /**
      * 음악 좋아요

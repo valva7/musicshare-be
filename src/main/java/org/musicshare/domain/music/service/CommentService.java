@@ -3,7 +3,6 @@ package org.musicshare.domain.music.service;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.music.dto.req.CreateCommentReq;
@@ -24,7 +23,6 @@ import org.musicshare.domain.music.repository.JpaMusicRepository;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CommentService {
 
     private final JpaMusicRepository jpaMusicRepository;
@@ -32,6 +30,18 @@ public class CommentService {
     private final JpaCommentRepository jpaCommentRepository;
     private final MemberRepository memberRepository;
 
+    public CommentService(JpaMusicRepository jpaMusicRepository, MusicRepository musicRepository, JpaCommentRepository jpaCommentRepository, MemberRepository memberRepository) {
+        this.jpaMusicRepository = jpaMusicRepository;
+        this.musicRepository = musicRepository;
+        this.jpaCommentRepository = jpaCommentRepository;
+        this.memberRepository = memberRepository;
+    }
+
+    /**
+     * 댓글 작성
+     * @param user
+     * @param req
+     */
     @Retryable(
         value = ObjectOptimisticLockingFailureException.class,
         maxAttempts = 3,
@@ -57,6 +67,11 @@ public class CommentService {
         jpaCommentRepository.save(commentEntity);
     }
 
+    /**
+     * 댓글 삭제
+     * @param musicId
+     * @param TopTenMusicCommentRes
+     */
     public List<TopTenMusicCommentRes> getMusicCommentList(Long musicId) {
         return jpaCommentRepository.findCommentsByMusicId(musicId);
     }

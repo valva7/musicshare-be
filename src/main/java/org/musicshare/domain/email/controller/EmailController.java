@@ -2,13 +2,10 @@ package org.musicshare.domain.email.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.email.service.EmailService;
 import org.musicshare.global.response.Response;
 import org.springframework.validation.annotation.Validated;
@@ -21,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/email")
 @Validated
 @RestController
-@RequiredArgsConstructor
 public class EmailController {
 
     private final EmailService emailService;
+
+    public EmailController(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @GetMapping("/signUp/verify")
     @Operation(

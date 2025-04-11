@@ -15,8 +15,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class FCMInitializer {
 
-    @Value("${fcm.certification}")
-    private String googleApplicationCredentials;
+    private final String googleApplicationCredentials;
+
+    public FCMInitializer(@Value("${fcm.certification}") String googleApplicationCredentials) {
+        this.googleApplicationCredentials = googleApplicationCredentials;
+    }
 
     @PostConstruct
     public void initialize() throws IOException {

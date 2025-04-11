@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.like.dto.res.MusicLikedRes;
 import org.musicshare.domain.like.service.LikeService;
 import org.musicshare.global.pricipal.AuthPrincipal;
@@ -22,10 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Like", description = "좋아요 관련 API")
 @RequestMapping("/like")
 @RestController
-@RequiredArgsConstructor
 public class LikeController {
 
     private final LikeService likeService;
+
+    public LikeController(LikeService likeService) {
+        this.likeService = likeService;
+    }
 
     @PostMapping("/music/{musicId}")
     @Operation(

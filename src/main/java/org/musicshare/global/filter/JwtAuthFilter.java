@@ -18,13 +18,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 // OncePerRequestFilter -> 매 요청마다 한 번만 실행되는 필터
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final TokenProvider tokenProvider;
 
     private final MemberRepository repository;
+
+    public JwtAuthFilter(
+        CustomUserDetailsService customUserDetailsService,
+        TokenProvider tokenProvider,
+        MemberRepository repository
+    ) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.tokenProvider = tokenProvider;
+        this.repository = repository;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

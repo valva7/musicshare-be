@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.music.dto.req.CreateCommentReq;
 import org.musicshare.domain.music.service.CommentService;
 import org.musicshare.global.pricipal.AuthPrincipal;
@@ -21,10 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/comment/auth")
 @Validated
 @RestController
-@RequiredArgsConstructor
 public class CommentAuthController {
 
     private final CommentService commentService;
+
+    public CommentAuthController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @PostMapping
     @Operation(

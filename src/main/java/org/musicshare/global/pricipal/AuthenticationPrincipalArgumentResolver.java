@@ -13,10 +13,13 @@ import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.member.repository.MemberRepository;
 
 // HandlerMethodArgumentResolver -> Spring MVC에서 컨트롤러 메서드의 파라미터를 동적으로 해결하기 위해 사용되는 인터페이스
-@AllArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final MemberRepository memberRepository;
+
+    public AuthenticationPrincipalArgumentResolver(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

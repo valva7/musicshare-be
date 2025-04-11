@@ -66,14 +66,19 @@ public class MyService {
 - `@Tag`, `@RequestMapping`, `@RestController`, `@RequiredArgsConstructor`
 - Controller: HTTP 액션 + 리소스명 중심 (ex. `getUser`, `createUser`, `updateUser`)
 - Swagger는 Operation으로 설명
+- 의존성 주입은 생성자 주입을 사용 (**@RequiredArgsConstructor**, **@AllArgsConstructor** 는 지양)
+
 ```java
 @Tag(name = "Music", description = "음악 관련 API")
 @RequestMapping("/music/public")
 @RestController
-@RequiredArgsConstructor
 public class MusicController {
 
   private final MusicService musicService;
+  
+    public MusicController(MusicService musicService) {
+        this.musicService = musicService;
+    }
 
   @GetMapping("/hot/current")
   @Operation(
@@ -101,12 +106,16 @@ public class MusicController {
 - `@Slf4j`, `@Service`, `@RequiredArgsConstructor`
 - Service: 비즈니스 동작 설명 (ex. `findUserById`, `registerUser`, `modifyUserInfo`)
 - 비즈니스 로직은 이곳에서 처리하며, 트랜잭션 처리 필요시 명시적으로 지정
+- 의존성 주입은 생성자 주입을 사용 (**@RequiredArgsConstructor**, **@AllArgsConstructor** 는 지양)
 ```java
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MusicService {
-    private final Musicepository musicRepository;
+    private final MusicRepository musicRepository;
+    
+    public MusicService(MusicRepository musicRepository) {
+        this.musicRepository = musicRepository;
+    }
 
     @Transactional(readOnly = true)
     public MusicRes getMusic(Long id) {
@@ -126,6 +135,36 @@ public class MusicService {
 ```java
 public interface MusicRepository {
     Music findMusicById(Long id);
+}
+```
+
+### Repository 구현체 
+- Spring Data JPA 메서드는 도메인 + 조건 + 키워드 기반
+  - `findBy`, `countBy`, `existsBy`, `deleteBy` 사용
+  - 예시:
+    - `findByUsername(String username)`
+    - `findByEmailAndStatus(String email, Status status)`
+    - `existsByEmail(String email)`
+    - `deleteByCreatedDateBefore(LocalDate date)`
+- 의존성 주입은 생성자 주입을 사용 (**@RequiredArgsConstructor**, **@AllArgsConstructor** 는 지양)
+```java
+public class MusicRepositoryImpl implements MusicRepository{
+
+  private final JPAQueryFactory queryFactory;
+
+  private final JpaMusicRepository jpaMusicRepository;
+  private final EntityManager entityManager;
+
+  public MusicRepositoryImpl(JPAQueryFactory queryFactory, JpaMusicRepository jpaMusicRepository, EntityManager entityManager) {
+    this.queryFactory = queryFactory;
+    this.jpaMusicRepository = jpaMusicRepository;
+    this.entityManager = entityManager;
+  }
+    
+  public Music findMusicById(Long id) {
+    MusicEntity music = jpaMusicRepository.findById(id).orElseThrow();
+    return music.toMusic();
+  }
 }
 ```
 

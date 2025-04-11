@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.music.dto.res.MusicDetailRes;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +21,13 @@ import org.musicshare.global.response.Response;
 @Tag(name = "Music", description = "음악 관련 API")
 @RequestMapping("/music/public")
 @RestController
-@RequiredArgsConstructor
 public class MusicController {
 
     private final MusicService musicService;
+
+    public MusicController(MusicService musicService) {
+        this.musicService = musicService;
+    }
 
     @GetMapping("/hot/current")
     @Operation(

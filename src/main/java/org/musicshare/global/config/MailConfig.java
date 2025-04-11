@@ -1,7 +1,6 @@
 package org.musicshare.global.config;
 
 import java.util.Properties;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,40 +8,41 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
-@RequiredArgsConstructor
 public class MailConfig {
+
+    private final String host;
+    private final String username;
+    private final String password;
+    private final int port;
+    private final boolean auth;
+    private final boolean debug;
+    private final int connectionTimeout;
+    private final boolean startTlsEnable;
+
     private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
     private static final String MAIL_DEBUG = "mail.smtp.debug";
     private static final String MAIL_CONNECTION_TIMEOUT = "mail.smtp.connectiontimeout";
     private static final String MAIL_SMTP_STARTTLS_ENABLE = "mail.smtp.starttls.enable";
 
-    // SMTP 서버
-    @Value("${spring.mail.host}")
-    private String host;
-
-    // 계정
-    @Value("${spring.mail.username}")
-    private String username;
-
-    // 비밀번호
-    @Value("${spring.mail.password}")
-    private String password;
-
-    // 포트번호
-    @Value("${spring.mail.port}")
-    private int port;
-
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-    private boolean auth;
-
-    @Value("${spring.mail.properties.mail.smtp.debug}")
-    private boolean debug;
-
-    @Value("${spring.mail.properties.mail.smtp.timeout}")
-    private int connectionTimeout;
-
-    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
-    private boolean startTlsEnable;
+    public MailConfig(
+        @Value("${spring.mail.host}") String host,
+        @Value("${spring.mail.username}") String username,
+        @Value("${spring.mail.password}") String password,
+        @Value("${spring.mail.port}") int port,
+        @Value("${spring.mail.properties.mail.smtp.auth}") boolean auth,
+        @Value("${spring.mail.properties.mail.smtp.debug}") boolean debug,
+        @Value("${spring.mail.properties.mail.smtp.timeout}") int connectionTimeout,
+        @Value("${spring.mail.properties.mail.smtp.starttls.enable}") boolean startTlsEnable
+    ) {
+        this.host = host;
+        this.username = username;
+        this.password = password;
+        this.port = port;
+        this.auth = auth;
+        this.debug = debug;
+        this.connectionTimeout = connectionTimeout;
+        this.startTlsEnable = startTlsEnable;
+    }
 
     @Bean
     public JavaMailSender javaMailService() {

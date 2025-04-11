@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final KakaoService kakaoService;
@@ -33,6 +32,15 @@ public class AuthService {
     private final FcmPushRepository fcmPushRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public AuthService(KakaoService kakaoService, StringRedisTemplate redisTemplate, TokenProvider tokenProvider, MemberRepository memberRepository, JpaMemberRepository jpaMemberRepository, FcmPushRepository fcmPushRepository, PasswordEncoder passwordEncoder) {
+        this.kakaoService = kakaoService;
+        this.redisTemplate = redisTemplate;
+        this.tokenProvider = tokenProvider;
+        this.memberRepository = memberRepository;
+        this.jpaMemberRepository = jpaMemberRepository;
+        this.fcmPushRepository = fcmPushRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * 카카오 로그인

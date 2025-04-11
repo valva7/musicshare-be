@@ -4,19 +4,19 @@ import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.musicshare.common.file.S3Uploader;
 import org.musicshare.domain.music.dto.req.MusicUploadReq;
 import org.musicshare.domain.music.dto.res.MusicDetailRes;
 import org.musicshare.domain.music.repository.MusicFileRepository;
 import org.musicshare.domain.music.repository.MusicRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.musicshare.domain.music.utils.FFmpegAudioAnalysis;
 import org.musicshare.domain.ai.dto.res.GptRes;
 import org.musicshare.domain.ai.service.OpenAiService;
-import org.musicshare.domain.file.service.S3Uploader;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.music.dto.res.PopularMusicRes;
 import org.musicshare.domain.music.model.Music;
@@ -27,17 +27,24 @@ import org.musicshare.global.pricipal.UserAuth;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MusicService {
 
     private final OpenAiService openAiService;
-    private final S3Uploader s3Uploader;
 
+    private final S3Uploader s3Uploader;
     private final JpaMusicRepository jpaMusicRepository;
     private final MusicRepository musicRepository;
     private final MusicFileRepository musicFileRepository;
     private final MemberRepository memberRepository;
 
+    public MusicService(OpenAiService openAiService, @Qualifier("Music3SUploader")S3Uploader s3Uploader, JpaMusicRepository jpaMusicRepository, MusicRepository musicRepository, MusicFileRepository musicFileRepository, MemberRepository memberRepository) {
+        this.openAiService = openAiService;
+        this.s3Uploader = s3Uploader;
+        this.jpaMusicRepository = jpaMusicRepository;
+        this.musicRepository = musicRepository;
+        this.musicFileRepository = musicFileRepository;
+        this.memberRepository = memberRepository;
+    }
 
     /**
      * 음악 파일 업로드
@@ -65,7 +72,7 @@ public class MusicService {
             // 예외 발생 시 S3에 업로드한 파일 삭제
             log.error("데이터 저장 중 오류 발생. S3에서 파일 삭제: {}", uploadUrl);
             if (uploadUrl != null && !uploadUrl.isEmpty()) {
-                s3Uploader.deleteFile(uploadUrl);
+                s3Uploader.fileDelete(uploadUrl);
             }
         }
     }
@@ -106,7 +113,7 @@ public class MusicService {
     private String uploadMusicFileToS3(MultipartFile file) throws IOException {
         try {
             // 음악 파일 S3 업로드
-            return s3Uploader.musicFileUpload(file);
+            return s3Uploader.fileUpload(file);
         } catch (IOException e) {
             throw new IOException("파일 업로드 실패", e);
         }

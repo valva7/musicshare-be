@@ -1,7 +1,6 @@
 package org.musicshare.domain.push.repository;
 
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.push.entity.FcmTokenEntity;
@@ -9,10 +8,14 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
 public class FcmPushRepositoryImpl implements FcmPushRepository {
 
     private final JpaFcmPushRepository jpaFcmPushRepository;
+
+    public FcmPushRepositoryImpl(JpaFcmPushRepository jpaFcmPushRepository) {
+        this.jpaFcmPushRepository = jpaFcmPushRepository;
+    }
+
 
     public void firebaseTokenSave(Member member, String fcmToken) {
         FcmTokenEntity fcmTokenEntity = new FcmTokenEntity(member.getId(), fcmToken);

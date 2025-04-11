@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.auth.dto.req.KakaoLoginReq;
 import org.musicshare.domain.auth.dto.req.LoginReq;
 import org.musicshare.domain.auth.dto.req.MemberSignupReq;
@@ -34,11 +33,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @Validated
 @RestController
-@RequiredArgsConstructor
 public class AuthController {
 
     private final TokenProvider tokenProvider;
     private final AuthService authService;
+
+    public AuthController(TokenProvider tokenProvider, AuthService authService) {
+        this.tokenProvider = tokenProvider;
+        this.authService = authService;
+    }
 
 
     @PostMapping("/kakao-token")

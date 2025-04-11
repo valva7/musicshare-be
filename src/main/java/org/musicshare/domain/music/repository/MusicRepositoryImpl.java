@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.musicshare.domain.member.model.Member;
 import org.musicshare.domain.music.dto.res.PopularMusicRes;
 import org.musicshare.domain.music.model.Music;
@@ -21,17 +20,22 @@ import org.musicshare.domain.music.model.entity.QMusicFileEntity;
 import org.musicshare.domain.member.model.entity.QMemberEntity;
 
 @Repository
-@RequiredArgsConstructor
 public class MusicRepositoryImpl implements MusicRepository{
-
-    private final JpaMusicRepository jpaMusicRepository;
-    private final EntityManager entityManager;
-
-    private final JPAQueryFactory queryFactory;
 
     private static final QMusicEntity music = QMusicEntity.musicEntity;
     private static final QMusicFileEntity musicFile = QMusicFileEntity.musicFileEntity;
     private static final QMemberEntity member = QMemberEntity.memberEntity;
+
+    private final JPAQueryFactory queryFactory;
+
+    private final JpaMusicRepository jpaMusicRepository;
+    private final EntityManager entityManager;
+
+    public MusicRepositoryImpl(JPAQueryFactory queryFactory, JpaMusicRepository jpaMusicRepository, EntityManager entityManager) {
+        this.queryFactory = queryFactory;
+        this.jpaMusicRepository = jpaMusicRepository;
+        this.entityManager = entityManager;
+    }
 
     public Music findMusicById(Long id) {
         MusicEntity music = jpaMusicRepository.findById(id).orElseThrow();

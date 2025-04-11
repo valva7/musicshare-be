@@ -11,13 +11,15 @@ import org.musicshare.domain.ai.dto.res.GptRes;
 @Service
 public class OpenAiService {
 
-    @Value("${gpt.url}")
-    private String gptApiUri;
-
-    @Value("${gpt.api-key}")
-    private String gptApiKey;
-
     private final String MOODS = "[밝은, 신나는, 경쾌한, 행복한, 청량한, 귀여운, 코믹한, 희망한, 로맨틱, 사랑스러운, 슬픈, 어두운, 우울한, 쓸쓸한, 아련한, 잔잔한, 웅장한, 비장한, 긴장감, 화난, 박력, 공포, 몽환적인, 신비로운, 나른한, 미래적인, 그루브, 섹시한, 단순한, 중독성, 난해한, 이국적인, 한국적인]";
+
+    private final String GET_API_URL;
+    private final String GPT_API_KEY;
+
+    public OpenAiService(@Value("${gpt.url}") String getApiUrl, @Value("${gpt.api-key}") String gptApiKey) {
+        this.GET_API_URL = getApiUrl;
+        this.GPT_API_KEY = gptApiKey;
+    }
 
     /**
      * 음악 분석을 위한 GPT API 호출
@@ -39,10 +41,10 @@ public class OpenAiService {
             + "}]"
             + "}";
 
-        return WebClient.create(gptApiUri)
+        return WebClient.create(GET_API_URL)
             .post()
             .uri(UriBuilder::build)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + gptApiKey)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + GPT_API_KEY)
             .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON.toString())
             .bodyValue(requestBody)
             .retrieve()

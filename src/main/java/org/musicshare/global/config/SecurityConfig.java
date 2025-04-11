@@ -23,15 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final MemberRepository repository;
-
-    private final CustomUserDetailsService customUserDetailsService;
-    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
-    private final TokenProvider tokenProvider;
 
     private static final String[] AUTH_ALLOWLIST = {
         "/swagger-ui/**",
@@ -47,6 +39,27 @@ public class SecurityConfig {
         "/actuator/prometheus", // 인증 추가 예정
         "/actuator/**", // 인증 추가 예정
     };
+
+    private final MemberRepository repository;
+
+    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final TokenProvider tokenProvider;
+
+    public SecurityConfig(
+        MemberRepository repository,
+        CustomUserDetailsService customUserDetailsService,
+        CustomAuthenticationEntryPoint authenticationEntryPoint,
+        CustomAccessDeniedHandler accessDeniedHandler,
+        TokenProvider tokenProvider
+    ) {
+        this.repository = repository;
+        this.customUserDetailsService = customUserDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.tokenProvider = tokenProvider;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)  throws Exception{

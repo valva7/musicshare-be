@@ -1,6 +1,7 @@
 HELP.md
 application.yml
 application-dev.yml
+musicshare-sdk.json
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
