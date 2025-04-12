@@ -8,19 +8,23 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.musicshare.global.exception.S3FileProcessException;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 public abstract class S3Uploader {
 
     protected final String bucket;
+    protected final Set<String> fileExtensions;
     protected final String directory;
     protected final AmazonS3 amazonS3;
 
-    protected S3Uploader(String bucket, String directory, AmazonS3 amazonS3) {
+    protected S3Uploader(String bucket, Set<String> fileExtensions, String directory, AmazonS3 amazonS3) {
         this.bucket = bucket;
+        this.fileExtensions = fileExtensions;
         this.directory = directory;
         this.amazonS3 = amazonS3;
     }
@@ -59,30 +63,57 @@ public abstract class S3Uploader {
                 fos.write(file.getBytes());
             } catch (IOException e) {
                 log.error("파일 변환 중 오류 발생: {}", e.getMessage());
-                throw e;
+                throw new S3FileProcessException("파일 변환 중 오류 발생: " + e.getMessage());
             }
-            return convertFile;
         }
-        throw new IllegalArgumentException(String.format("파일 변환에 실패했습니다. %s", originalFileName));
+        return convertFile;
     }
 
     protected String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile));
-        return amazonS3.getUrl(bucket, fileName).toString();
+        if (!uploadFile.exists()) {
+            throw new S3FileProcessException("파일이 비어있음");
+        }
+
+        String uploadDirectory = directory + fileName;
+        amazonS3.putObject(new PutObjectRequest(bucket, uploadDirectory, uploadFile));
+        String uploadUrl = amazonS3.getUrl(bucket, uploadDirectory).toString();
+        log.info("S3 Upload URL: {}", uploadUrl);
+        return uploadUrl;
     }
 
     protected void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        } else {
-            // TODO: 파일 삭제 실패 시 예외 처리
-            log.info("파일이 삭제되지 못했습니다.");
+        if (!targetFile.delete()) {
+            throw new S3FileProcessException("파일 삭제 실패: " + targetFile.getName());
         }
     }
 
     protected String createUniqueFileName(String originalFileName) {
         String uuid = UUID.randomUUID().toString();
-        return uuid + "_" + originalFileName.replaceAll("\\s", "_");
+        return directory + uuid + "_" + originalFileName.replaceAll("\\s", "_");
+    }
+
+    protected String fileValidate(MultipartFile multipartFile) {
+        if (multipartFile.isEmpty()) {
+            log.error("파일이 비어있음");
+            throw new S3FileProcessException("파일이 비어있음");
+        }
+
+        // 파일 이름에서 공백을 제거한 새로운 파일 이름 생성
+        String originalFileName = multipartFile.getOriginalFilename();
+
+        if (originalFileName == null || originalFileName.isBlank()) {
+            log.error("파일 이름이 비어있음");
+            throw new S3FileProcessException("파일 이름이 비어있음");
+        }
+
+        // 파일 확장자 확인
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        if (fileExtensions.contains(fileExtension.toLowerCase())) {
+            log.error("지원하지 않는 파일 형식: {}", fileExtension);
+            throw new S3FileProcessException("지원하지 않는 파일 형식: " + fileExtension);
+        }
+
+        return originalFileName;
     }
 
 }

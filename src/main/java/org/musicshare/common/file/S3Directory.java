@@ -1,6 +1,6 @@
 package org.musicshare.common.file;
 
-public enum FileDirectory {
+public enum S3Directory {
 
     MUSIC("music/"),
     IMAGE("image/"),
@@ -9,7 +9,7 @@ public enum FileDirectory {
 
     private final String directory;
 
-    FileDirectory(String directory) {
+    S3Directory(String directory) {
         this.directory = directory;
     }
 
