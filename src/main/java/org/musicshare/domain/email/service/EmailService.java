@@ -49,7 +49,6 @@ public class EmailService {
         sendEmail(email, title, mailTemplate);
     }
 
-    // ========================================= Inner Method =========================================
     private void sendEmail(String receiver, String title, String signUpVerifyTemplate) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {

@@ -75,17 +75,6 @@ public class LikeService {
         musicRepository.update(music);
     }
 
-    /**
-     * 음악 좋아요 여부 조회
-     * @param user
-     * @param musicId
-     * @return
-     */
-    public MusicLikedRes getMusicLiked(UserAuth user, Long musicId) {
-        return likeRepository.findMusicLiked(user, musicId);
-    }
-
-    // ========================================= Inner Method =========================================
     public void saveLike(Like like) {
         LikeEntity likeEntity = new LikeEntity(like);
         jpaLikeRepository.save(likeEntity);
@@ -94,6 +83,16 @@ public class LikeService {
     public void deleteLike(Like like) {
         LikeEntity likeEntity = new LikeEntity(like);
         jpaLikeRepository.delete(likeEntity);
+    }
+
+    /**
+     * 음악 좋아요 여부 조회
+     * @param user
+     * @param musicId
+     * @return
+     */
+    public MusicLikedRes getMusicLiked(UserAuth user, Long musicId) {
+        return likeRepository.findMusicLiked(user, musicId);
     }
 
     @Recover

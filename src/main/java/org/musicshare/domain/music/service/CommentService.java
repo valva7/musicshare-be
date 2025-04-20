@@ -70,7 +70,7 @@ public class CommentService {
     /**
      * 댓글 삭제
      * @param musicId
-     * @param TopTenMusicCommentRes
+     * @param List<TopTenMusicCommentRes>
      */
     public List<TopTenMusicCommentRes> getMusicCommentList(Long musicId) {
         return jpaCommentRepository.findCommentsByMusicId(musicId);

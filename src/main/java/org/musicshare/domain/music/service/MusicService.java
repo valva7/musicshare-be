@@ -70,6 +70,7 @@ public class MusicService {
             musicFileRepository.save(req.file().getOriginalFilename(), music, uploadUrl);
         } catch (DataIntegrityViolationException | PersistenceException e) {
             // 예외 발생 시 S3에 업로드한 파일 삭제
+            // TODO: 커스텀 Exception 처리
             log.error("데이터 저장 중 오류 발생. S3에서 파일 삭제: {}", uploadUrl);
             if (uploadUrl != null && !uploadUrl.isEmpty()) {
                 s3Uploader.fileDelete(uploadUrl);
@@ -77,24 +78,6 @@ public class MusicService {
         }
     }
 
-    /**
-     * Top 10 음악 조회
-     * @param genre
-     */
-    public List<PopularMusicRes> getTop10ByCurrentMonthOrWeekOrderByLikes(String genre) {
-        return musicRepository.findTop10ByCurrentMonthOrWeekOrderByLikes(genre);
-    }
-
-    /**
-     * 음악 세부 정보 조회
-     * @param musicId
-     * @return
-     */
-    public MusicDetailRes getMusicDetail(Long musicId){
-        return jpaMusicRepository.findMusicById(musicId);
-    }
-
-    // ============================================================ Inner Method ============================================================
     private MusicInfo analyzeMusic(MusicUploadReq req) throws Exception {
         // FFMPEG으로 음악 특징 분석
         String musicAnalysisData = FFmpegAudioAnalysis.analyzeAudio(req.file());
@@ -155,5 +138,23 @@ public class MusicService {
         // 소수 버리고 정수만
         return (int) Double.parseDouble(analysisData.substring(startIdx, endIdx).trim());
     }
+
+    /**
+     * Top 10 음악 조회
+     * @param genre
+     */
+    public List<PopularMusicRes> getTop10ByCurrentMonthOrWeekOrderByLikes(String genre) {
+        return musicRepository.findTop10ByCurrentMonthOrWeekOrderByLikes(genre);
+    }
+
+    /**
+     * 음악 세부 정보 조회
+     * @param musicId
+     * @return
+     */
+    public MusicDetailRes getMusicDetail(Long musicId){
+        return jpaMusicRepository.findMusicById(musicId);
+    }
+
 
 }
